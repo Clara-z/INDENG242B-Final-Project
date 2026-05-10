@@ -587,4 +587,70 @@ If these come up, defer to "future work" section of report.
 
 ---
 
+## 12. RL Execution Wiring (Plug-In Ready)
+
+This section defines the minimum runnable contract for local RL training in this repository.
+
+### 12.1 Minimum input for training
+
+If separate source parquets from Section 2 already exist, keep them as source-of-truth. For RL training runs, also provide a merged modeling table at:
+
+- `data/processed/rl_features_with_news_pca32.parquet`
+
+Required columns in this merged parquet:
+
+- `ticker` (string)
+- `date` (date/datetime)
+- `close_adj` (float; used only by env for realized return)
+- All engineered numeric factors (price, volatility, fundamentals, sector dummies)
+- News features including PCA dimensions (`news_pca_00 ... news_pca_31`)
+
+The local trainer consumes all numeric columns except `close_adj` as state features.
+
+If only separate source parquets exist, generate the merged RL parquet with:
+
+```bash
+python rl/build_merged_rl_features.py \
+  --asset-path data/processed/asset_features.parquet \
+  --news-path data/processed/news_embeddings.parquet \
+  --output-path data/processed/rl_features_with_news_pca32.parquet
+```
+
+### 12.2 Run command
+
+Use:
+
+```bash
+python rl/train_portfolio_rl.py \
+  --features-path data/processed/rl_features_with_news_pca32.parquet \
+  --train-start 2020-01-01 --train-end 2023-06-30 \
+  --val-start 2023-07-01 --val-end 2023-12-31 \
+  --test-start 2024-01-01 --test-end 2026-01-31 \
+  --total-timesteps 300000 --eval-freq 25000 --episode-length 252
+```
+
+### 12.3 Saved outputs per run
+
+Each run writes to `results/rl_runs/<timestamp>/`:
+
+- `models/best_model.zip`, `models/final_model.zip`
+- `metrics/train_metrics.csv`, `metrics/val_metrics.csv`, `metrics/test_daily_returns.csv`, `metrics/summary.json`
+- `plots/loss_curves.png`, `plots/avg_reward.png`, `plots/val_sharpe_hit_rate.png`, `plots/test_equity_curve.png`
+
+`val_sharpe_hit_rate.png` reports validation Sharpe and average hit-rate (accuracy proxy).
+
+### 12.4 Data placement checklist
+
+Before running RL:
+
+1. Put universe file in `data/universe.json`.
+2. Put merged RL feature parquet in `data/processed/rl_features_with_news_pca32.parquet`.
+3. Run a schema check:
+   ```bash
+   python rl/train_portfolio_rl.py --dry-run
+   ```
+4. Start training with the command in 12.2.
+
+---
+
 This spec is complete enough to feed to Codex section by section. The likely failure modes have all been called out 喵.

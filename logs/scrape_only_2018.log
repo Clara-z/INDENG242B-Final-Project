@@ -1,0 +1,412 @@
+2026-05-10 12:31:04,644 | INFO | Ticker filter loaded from tickers.txt: requested=30, selected=27, missing_in_config=3
+2026-05-10 12:31:04,645 | WARNING | Tickers not found in config_companies.py: AGNC,AKBA,AMC
+2026-05-10 12:31:04,645 | INFO | Starting scraping-only pipeline year=2018
+2026-05-10 12:31:04,645 | INFO | Config=RuntimeConfig(year=2018, output_dir='data/processed/month_ticker_one_window_test', log_dir='logs', universe_path='data/universe.json', tickers_file='tickers.txt', overwrite=True, max_articles_per_month=30, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=1, gdelt_maxrecords=40, gdelt_timeout=20, gdelt_retries=1, gdelt_sleep=0.05, min_request_interval=5.5, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, article_timeout=5, article_retries=0, article_workers=16, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=True, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 12:31:04,645 | INFO | Companies selected=27
+2026-05-10 12:31:04,645 | INFO | Ticker source file=tickers.txt
+2026-05-10 12:31:04,645 | INFO | Window days=30
+2026-05-10 12:31:04,645 | INFO | Max windows per ticker=1
+2026-05-10 12:31:24,745 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22Apple+Inc%22+OR+%22Apple+earnings%22+OR+%. Retry/skip.
+2026-05-10 12:31:47,322 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22Apple+Inc%22+OR+%22Apple+earnings%22+OR+%. Retry/skip.
+2026-05-10 12:32:02,855 | WARNING | GDELT status=429. Sleeping 6.2s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 12:32:18,321 | WARNING | GDELT status=429. Sleeping 11.7s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 12:32:37,695 | WARNING | GDELT status=429. Sleeping 6.5s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 12:32:53,519 | WARNING | GDELT status=429. Sleeping 11.5s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 12:33:05,005 | INFO | Ticker AAPL fallback split window 2018-01-01 -> 2018-01-31 got 0 articles
+2026-05-10 12:33:05,061 | INFO | Ticker AAPL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 12:33:05,061 | INFO | Ticker AAPL done. months_processed=1 kept_articles=0
+2026-05-10 12:33:15,294 | INFO | Ticker AAL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 12:33:15,294 | INFO | Ticker AAL done. months_processed=1 kept_articles=30
+2026-05-10 12:33:35,300 | INFO | Ticker ABEO reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 12:33:35,300 | INFO | Ticker ABEO done. months_processed=1 kept_articles=30
+2026-05-10 12:33:47,169 | WARNING | GDELT status=429. Sleeping 5.7s then retry/skip. query=("ACADIA Pharmaceuticals" OR "ACADIA Pharmaceuticals stock") sourcelang:english -"Acadia National Park" -"Acadia University"
+2026-05-10 12:34:12,925 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22ACADIA+Pharmaceuticals%22+OR+%22ACADIA+Ph. Retry/skip.
+2026-05-10 12:34:25,429 | WARNING | GDELT status=429. Sleeping 6.5s then retry/skip. query=("ACADIA Pharmaceuticals" OR "ACADIA Pharmaceuticals stock") sourcelang:english -"Acadia National Park" -"Acadia University"
+2026-05-10 12:34:38,784 | WARNING | GDELT status=429. Sleeping 11.2s then retry/skip. query=("ACADIA Pharmaceuticals" OR "ACADIA Pharmaceuticals stock") sourcelang:english -"Acadia National Park" -"Acadia University"
+2026-05-10 12:35:04,980 | INFO | Ticker ACAD fallback split window 2018-01-01 -> 2018-01-31 got 40 articles
+2026-05-10 12:35:05,049 | INFO | Ticker ACAD reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 12:35:05,049 | INFO | Ticker ACAD done. months_processed=1 kept_articles=30
+2026-05-10 12:35:20,041 | INFO | Ticker ACGL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 12:35:20,041 | INFO | Ticker ACGL done. months_processed=1 kept_articles=30
+2026-05-10 12:35:38,454 | INFO | Ticker ACHC reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 12:35:38,454 | INFO | Ticker ACHC done. months_processed=1 kept_articles=30
+2026-05-10 12:35:52,354 | WARNING | GDELT status=429. Sleeping 6.1s then retry/skip. query=("Achieve Life Sciences" OR "Achieve Life Sciences stock" OR "cytisinicline") sourcelang:english
+2026-05-10 12:36:04,141 | WARNING | GDELT status=429. Sleeping 11.2s then retry/skip. query=("Achieve Life Sciences" OR "Achieve Life Sciences stock" OR "cytisinicline") sourcelang:english
+2026-05-10 12:36:20,793 | WARNING | GDELT status=429. Sleeping 6.0s then retry/skip. query=("Achieve Life Sciences" OR "Achieve Life Sciences stock" OR "cytisinicline") sourcelang:english
+2026-05-10 12:39:22,491 | INFO | Ticker filter loaded from tickers.txt: requested=30, selected=30, missing_in_config=0
+2026-05-10 12:39:22,492 | INFO | Starting scraping-only pipeline year=2018
+2026-05-10 12:39:22,492 | INFO | Config=RuntimeConfig(year=2018, output_dir='data/processed/month_ticker_one_window_test', log_dir='logs', universe_path='data/universe.json', tickers_file='tickers.txt', overwrite=True, max_articles_per_month=30, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=1, gdelt_maxrecords=80, gdelt_timeout=20, gdelt_retries=1, gdelt_sleep=0.05, min_request_interval=15.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, article_timeout=8, article_retries=1, article_workers=8, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 12:39:22,492 | INFO | Companies selected=30
+2026-05-10 12:39:22,492 | INFO | Ticker source file=tickers.txt
+2026-05-10 12:39:22,492 | INFO | Window days=30
+2026-05-10 12:39:22,492 | INFO | Max windows per ticker=1
+2026-05-10 12:39:28,502 | INFO | Ticker AAPL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 12:39:28,503 | INFO | Ticker AAPL done. months_processed=1 kept_articles=30
+2026-05-10 12:39:51,271 | INFO | Ticker AAL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 12:39:51,273 | INFO | Ticker AAL done. months_processed=1 kept_articles=30
+2026-05-10 12:40:10,556 | WARNING | GDELT status=429. Sleeping 15.7s then retry/skip. query=("Abeona Therapeutics" OR "Abeona Therapeutics stock") sourcelang:english
+2026-05-10 12:40:34,557 | WARNING | GDELT status=429. Sleeping 30.9s then retry/skip. query=("Abeona Therapeutics" OR "Abeona Therapeutics stock") sourcelang:english
+2026-05-10 12:41:08,920 | WARNING | GDELT status=429. Sleeping 15.2s then retry/skip. query=("Abeona Therapeutics" OR "Abeona Therapeutics stock") sourcelang:english
+2026-05-10 12:41:26,915 | WARNING | GDELT status=429. Sleeping 30.8s then retry/skip. query=("Abeona Therapeutics" OR "Abeona Therapeutics stock") sourcelang:english
+2026-05-10 12:41:59,473 | WARNING | GDELT status=429. Sleeping 15.8s then retry/skip. query=("Abeona Therapeutics" OR "Abeona Therapeutics stock") sourcelang:english
+2026-05-10 12:42:16,930 | WARNING | GDELT status=429. Sleeping 30.5s then retry/skip. query=("Abeona Therapeutics" OR "Abeona Therapeutics stock") sourcelang:english
+2026-05-10 12:42:47,466 | INFO | Ticker ABEO fallback split window 2018-01-01 -> 2018-01-31 got 0 articles
+2026-05-10 12:42:47,528 | INFO | Ticker ABEO reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 12:42:47,538 | INFO | Ticker ABEO done. months_processed=1 kept_articles=0
+2026-05-10 12:42:50,190 | WARNING | GDELT status=429. Sleeping 15.9s then retry/skip. query=("ACADIA Pharmaceuticals" OR "ACADIA Pharmaceuticals stock") sourcelang:english -"Acadia National Park" -"Acadia University"
+2026-05-10 12:43:11,514 | INFO | Ticker ACAD reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 12:43:11,516 | INFO | Ticker ACAD done. months_processed=1 kept_articles=30
+2026-05-10 12:43:28,227 | WARNING | GDELT status=429. Sleeping 15.3s then retry/skip. query=("Arch Capital Group" OR "Arch Capital Group earnings" OR "Arch Capital Group stock") sourcelang:english
+2026-05-10 12:43:47,614 | INFO | Ticker ACGL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 12:43:47,614 | INFO | Ticker ACGL done. months_processed=1 kept_articles=30
+2026-05-10 12:44:03,866 | WARNING | GDELT status=429. Sleeping 15.4s then retry/skip. query=("Acadia Healthcare Company" OR "Acadia Healthcare earnings" OR "Acadia Healthcare stock") sourcelang:english -"Acadia National Park" -"Acadia University"
+2026-05-10 12:44:21,241 | WARNING | GDELT status=429. Sleeping 30.3s then retry/skip. query=("Acadia Healthcare Company" OR "Acadia Healthcare earnings" OR "Acadia Healthcare stock") sourcelang:english -"Acadia National Park" -"Acadia University"
+2026-05-10 12:44:52,670 | WARNING | GDELT status=429. Sleeping 15.6s then retry/skip. query=("Acadia Healthcare Company" OR "Acadia Healthcare earnings" OR "Acadia Healthcare stock") sourcelang:english -"Acadia National Park" -"Acadia University"
+2026-05-10 12:45:37,962 | WARNING | GDELT status=429. Sleeping 15.9s then retry/skip. query=("Acadia Healthcare Company" OR "Acadia Healthcare earnings" OR "Acadia Healthcare stock") sourcelang:english -"Acadia National Park" -"Acadia University"
+2026-05-10 12:46:10,925 | INFO | Ticker ACHC fallback split window 2018-01-01 -> 2018-01-31 got 40 articles
+2026-05-10 12:46:10,988 | INFO | Ticker ACHC reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 12:46:10,988 | INFO | Ticker ACHC done. months_processed=1 kept_articles=30
+2026-05-10 12:46:29,706 | WARNING | GDELT status=429. Sleeping 15.3s then retry/skip. query=("Achieve Life Sciences" OR "Achieve Life Sciences stock" OR "cytisinicline") sourcelang:english
+2026-05-10 12:46:47,459 | WARNING | GDELT status=429. Sleeping 30.5s then retry/skip. query=("Achieve Life Sciences" OR "Achieve Life Sciences stock" OR "cytisinicline") sourcelang:english
+2026-05-10 12:47:24,451 | WARNING | GDELT status=429. Sleeping 15.1s then retry/skip. query=("Achieve Life Sciences" OR "Achieve Life Sciences stock" OR "cytisinicline") sourcelang:english
+2026-05-10 12:47:43,163 | WARNING | GDELT status=429. Sleeping 30.3s then retry/skip. query=("Achieve Life Sciences" OR "Achieve Life Sciences stock" OR "cytisinicline") sourcelang:english
+2026-05-10 12:48:16,877 | WARNING | GDELT status=429. Sleeping 15.0s then retry/skip. query=("Achieve Life Sciences" OR "Achieve Life Sciences stock" OR "cytisinicline") sourcelang:english
+2026-05-10 12:48:37,155 | INFO | Ticker ACHV fallback split window 2018-01-01 -> 2018-01-31 got 18 articles
+2026-05-10 12:48:37,229 | INFO | Ticker ACHV reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 12:48:37,230 | INFO | Ticker ACHV done. months_processed=1 kept_articles=18
+2026-05-10 12:48:54,803 | WARNING | GDELT status=429. Sleeping 15.1s then retry/skip. query=("Axcelis Technologies" OR "Axcelis Technologies earnings" OR "Axcelis Technologies stock") sourcelang:english
+2026-05-10 12:49:12,402 | WARNING | GDELT status=429. Sleeping 30.3s then retry/skip. query=("Axcelis Technologies" OR "Axcelis Technologies earnings" OR "Axcelis Technologies stock") sourcelang:english
+2026-05-10 12:49:45,693 | WARNING | GDELT status=429. Sleeping 15.5s then retry/skip. query=("Axcelis Technologies" OR "Axcelis Technologies earnings" OR "Axcelis Technologies stock") sourcelang:english
+2026-05-10 12:50:05,728 | WARNING | GDELT status=429. Sleeping 30.3s then retry/skip. query=("Axcelis Technologies" OR "Axcelis Technologies earnings" OR "Axcelis Technologies stock") sourcelang:english
+2026-05-10 12:50:38,932 | WARNING | GDELT status=429. Sleeping 15.2s then retry/skip. query=("Axcelis Technologies" OR "Axcelis Technologies earnings" OR "Axcelis Technologies stock") sourcelang:english
+2026-05-10 12:51:01,844 | INFO | Ticker ACLS fallback split window 2018-01-01 -> 2018-01-31 got 21 articles
+2026-05-10 12:51:01,909 | INFO | Ticker ACLS reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 12:51:01,910 | INFO | Ticker ACLS done. months_processed=1 kept_articles=21
+2026-05-10 12:51:19,027 | WARNING | GDELT status=429. Sleeping 15.1s then retry/skip. query=("ACM Research Inc" OR "ACM Research earnings" OR "ACM Research stock") sourcelang:english -"Association for Computing Machinery"
+2026-05-10 12:51:36,250 | WARNING | GDELT status=429. Sleeping 30.5s then retry/skip. query=("ACM Research Inc" OR "ACM Research earnings" OR "ACM Research stock") sourcelang:english -"Association for Computing Machinery"
+2026-05-10 12:52:09,247 | WARNING | GDELT status=429. Sleeping 15.7s then retry/skip. query=("ACM Research Inc" OR "ACM Research earnings" OR "ACM Research stock") sourcelang:english -"Association for Computing Machinery"
+2026-05-10 12:52:47,971 | WARNING | GDELT status=429. Sleeping 15.5s then retry/skip. query=("ACM Research Inc" OR "ACM Research earnings" OR "ACM Research stock") sourcelang:english -"Association for Computing Machinery"
+2026-05-10 12:53:05,759 | WARNING | GDELT status=429. Sleeping 30.5s then retry/skip. query=("ACM Research Inc" OR "ACM Research earnings" OR "ACM Research stock") sourcelang:english -"Association for Computing Machinery"
+2026-05-10 12:53:36,286 | INFO | Ticker ACMR fallback split window 2018-01-01 -> 2018-01-31 got 1 articles
+2026-05-10 12:53:36,358 | INFO | Ticker ACMR reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 12:53:36,359 | INFO | Ticker ACMR done. months_processed=1 kept_articles=1
+2026-05-10 12:53:38,084 | WARNING | GDELT status=429. Sleeping 15.2s then retry/skip. query=("Aclaris Therapeutics" OR "Aclaris Therapeutics stock") sourcelang:english
+2026-05-10 12:53:54,798 | WARNING | GDELT status=429. Sleeping 30.5s then retry/skip. query=("Aclaris Therapeutics" OR "Aclaris Therapeutics stock") sourcelang:english
+2026-05-10 12:54:27,062 | WARNING | GDELT status=429. Sleeping 15.5s then retry/skip. query=("Aclaris Therapeutics" OR "Aclaris Therapeutics stock") sourcelang:english
+2026-05-10 12:55:03,550 | WARNING | GDELT status=429. Sleeping 15.4s then retry/skip. query=("Aclaris Therapeutics" OR "Aclaris Therapeutics stock") sourcelang:english
+2026-05-10 12:55:21,977 | WARNING | GDELT status=429. Sleeping 30.8s then retry/skip. query=("Aclaris Therapeutics" OR "Aclaris Therapeutics stock") sourcelang:english
+2026-05-10 12:55:52,749 | INFO | Ticker ACRS fallback split window 2018-01-01 -> 2018-01-31 got 23 articles
+2026-05-10 12:55:52,819 | INFO | Ticker ACRS reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 12:55:52,819 | INFO | Ticker ACRS done. months_processed=1 kept_articles=23
+2026-05-10 12:56:07,510 | INFO | Ticker ADBE reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 12:56:07,510 | INFO | Ticker ADBE done. months_processed=1 kept_articles=30
+2026-05-10 12:56:26,839 | WARNING | GDELT status=429. Sleeping 15.4s then retry/skip. query=("Analog Devices Inc" OR "Analog Devices earnings" OR "Analog Devices stock") sourcelang:english
+2026-05-10 12:56:47,769 | WARNING | GDELT status=429. Sleeping 30.3s then retry/skip. query=("Analog Devices Inc" OR "Analog Devices earnings" OR "Analog Devices stock") sourcelang:english
+2026-05-10 12:57:48,091 | INFO | Ticker ADI fallback split window 2018-01-01 -> 2018-01-31 got 160 articles
+2026-05-10 12:57:48,155 | INFO | Ticker ADI reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 12:57:48,156 | INFO | Ticker ADI done. months_processed=1 kept_articles=30
+2026-05-10 12:58:05,322 | WARNING | GDELT status=429. Sleeping 15.0s then retry/skip. query=("ADMA Biologics" OR "ADMA Biologics earnings" OR "ADMA Biologics stock") sourcelang:english
+2026-05-10 12:58:22,035 | WARNING | GDELT status=429. Sleeping 30.5s then retry/skip. query=("ADMA Biologics" OR "ADMA Biologics earnings" OR "ADMA Biologics stock") sourcelang:english
+2026-05-10 12:58:54,511 | WARNING | GDELT status=429. Sleeping 15.7s then retry/skip. query=("ADMA Biologics" OR "ADMA Biologics earnings" OR "ADMA Biologics stock") sourcelang:english
+2026-05-10 12:59:11,874 | WARNING | GDELT status=429. Sleeping 30.1s then retry/skip. query=("ADMA Biologics" OR "ADMA Biologics earnings" OR "ADMA Biologics stock") sourcelang:english
+2026-05-10 12:59:43,453 | WARNING | GDELT status=429. Sleeping 15.9s then retry/skip. query=("ADMA Biologics" OR "ADMA Biologics earnings" OR "ADMA Biologics stock") sourcelang:english
+2026-05-10 13:00:01,669 | WARNING | GDELT status=429. Sleeping 30.4s then retry/skip. query=("ADMA Biologics" OR "ADMA Biologics earnings" OR "ADMA Biologics stock") sourcelang:english
+2026-05-10 13:00:32,094 | INFO | Ticker ADMA fallback split window 2018-01-01 -> 2018-01-31 got 0 articles
+2026-05-10 13:00:32,149 | INFO | Ticker ADMA reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 13:00:32,149 | INFO | Ticker ADMA done. months_processed=1 kept_articles=0
+2026-05-10 13:00:40,199 | WARNING | GDELT status=429. Sleeping 15.5s then retry/skip. query=("Automatic Data Processing" OR "Automatic Data Processing earnings" OR "Automatic Data Processing stock") sourcelang:english -"ADP employment report" -"ADP jobs report"
+2026-05-10 13:01:15,727 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22Automatic+Data+Processing%22+OR+%22Automa. Retry/skip.
+2026-05-10 13:02:16,746 | INFO | Ticker ADP fallback split window 2018-01-01 -> 2018-01-31 got 160 articles
+2026-05-10 13:02:16,837 | INFO | Ticker ADP reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 13:02:16,840 | INFO | Ticker ADP done. months_processed=1 kept_articles=30
+2026-05-10 13:02:37,968 | WARNING | GDELT status=429. Sleeping 15.4s then retry/skip. query=("Autodesk Inc" OR "Autodesk earnings" OR "Autodesk stock" OR "AutoCAD") sourcelang:english
+2026-05-10 13:03:12,539 | INFO | Ticker ADSK reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 13:03:12,539 | INFO | Ticker ADSK done. months_processed=1 kept_articles=30
+2026-05-10 13:03:47,490 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22Aehr+Test+Systems%22+OR+%22Aehr+Test+Syst. Retry/skip.
+2026-05-10 13:04:10,210 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22Aehr+Test+Systems%22+OR+%22Aehr+Test+Syst. Retry/skip.
+2026-05-10 13:04:55,298 | INFO | Ticker AEHR fallback split window 2018-01-01 -> 2018-01-31 got 43 articles
+2026-05-10 13:04:55,389 | INFO | Ticker AEHR reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 13:04:55,389 | INFO | Ticker AEHR done. months_processed=1 kept_articles=30
+2026-05-10 13:05:30,313 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22Advanced+Energy+Industries%22+OR+%22Advan. Retry/skip.
+2026-05-10 13:05:52,921 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22Advanced+Energy+Industries%22+OR+%22Advan. Retry/skip.
+2026-05-10 13:06:09,898 | WARNING | GDELT status=429. Sleeping 15.5s then retry/skip. query=("Advanced Energy Industries" OR "Advanced Energy Industries earnings" OR "Advanced Energy Industries stock") sourcelang:english
+2026-05-10 13:06:54,103 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Read timed out. (read timeout=20). Retry/skip.
+2026-05-10 13:07:18,576 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22Advanced+Energy+Industries%22+OR+%22Advan. Retry/skip.
+2026-05-10 13:07:27,249 | WARNING | GDELT status=429. Sleeping 30.6s then retry/skip. query=("Advanced Energy Industries" OR "Advanced Energy Industries earnings" OR "Advanced Energy Industries stock") sourcelang:english
+2026-05-10 13:07:57,847 | INFO | Ticker AEIS fallback split window 2018-01-01 -> 2018-01-31 got 0 articles
+2026-05-10 13:07:57,913 | INFO | Ticker AEIS reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 13:07:57,914 | INFO | Ticker AEIS done. months_processed=1 kept_articles=0
+2026-05-10 13:08:16,012 | INFO | Ticker AEP reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 13:08:16,013 | INFO | Ticker AEP done. months_processed=1 kept_articles=30
+2026-05-10 13:08:44,881 | WARNING | GDELT status=429. Sleeping 15.7s then retry/skip. query=("AGNC Investment Corp" OR "AGNC Investment earnings" OR "AGNC stock") sourcelang:english
+2026-05-10 13:09:07,308 | INFO | Ticker AGNC reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 13:09:07,309 | INFO | Ticker AGNC done. months_processed=1 kept_articles=30
+2026-05-10 13:09:42,249 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22Akebia+Therapeutics%22+OR+%22Akebia+Thera. Retry/skip.
+2026-05-10 13:10:04,797 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22Akebia+Therapeutics%22+OR+%22Akebia+Thera. Retry/skip.
+2026-05-10 13:10:16,898 | WARNING | GDELT status=429. Sleeping 15.0s then retry/skip. query=("Akebia Therapeutics" OR "Akebia Therapeutics earnings" OR "Akebia Therapeutics stock" OR "AKBA stock") sourcelang:english
+2026-05-10 13:10:41,024 | WARNING | GDELT status=429. Sleeping 30.1s then retry/skip. query=("Akebia Therapeutics" OR "Akebia Therapeutics earnings" OR "Akebia Therapeutics stock" OR "AKBA stock") sourcelang:english
+2026-05-10 13:11:31,088 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22Akebia+Therapeutics%22+OR+%22Akebia+Thera. Retry/skip.
+2026-05-10 13:11:53,474 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22Akebia+Therapeutics%22+OR+%22Akebia+Thera. Retry/skip.
+2026-05-10 13:11:58,092 | INFO | Ticker AKBA fallback split window 2018-01-01 -> 2018-01-31 got 0 articles
+2026-05-10 13:11:58,149 | INFO | Ticker AKBA reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 13:11:58,150 | INFO | Ticker AKBA done. months_processed=1 kept_articles=0
+2026-05-10 13:11:58,522 | WARNING | GDELT request failed: ('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer')). Retry/skip.
+2026-05-10 13:12:21,110 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22AMC+Entertainment+Holdings%22+OR+%22AMC+E. Retry/skip.
+2026-05-10 13:13:12,404 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22AMC+Entertainment+Holdings%22+OR+%22AMC+E. Retry/skip.
+2026-05-10 13:13:22,119 | INFO | Ticker AMC fallback split window 2018-01-01 -> 2018-01-31 got 141 articles
+2026-05-10 13:13:22,197 | INFO | Ticker AMC reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 13:13:22,197 | INFO | Ticker AMC done. months_processed=1 kept_articles=30
+2026-05-10 13:13:44,528 | WARNING | GDELT status=429. Sleeping 15.2s then retry/skip. query=("Clear Channel Outdoor Holdings" OR "Clear Channel Outdoor earnings" OR "Clear Channel Outdoor stock") sourcelang:english
+2026-05-10 13:14:19,725 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22Clear+Channel+Outdoor+Holdings%22+OR+%22C. Retry/skip.
+2026-05-10 13:14:43,935 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22Clear+Channel+Outdoor+Holdings%22+OR+%22C. Retry/skip.
+2026-05-10 13:15:06,434 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22Clear+Channel+Outdoor+Holdings%22+OR+%22C. Retry/skip.
+2026-05-10 13:15:21,291 | WARNING | GDELT status=429. Sleeping 15.1s then retry/skip. query=("Clear Channel Outdoor Holdings" OR "Clear Channel Outdoor earnings" OR "Clear Channel Outdoor stock") sourcelang:english
+2026-05-10 13:15:48,351 | WARNING | GDELT status=429. Sleeping 30.9s then retry/skip. query=("Clear Channel Outdoor Holdings" OR "Clear Channel Outdoor earnings" OR "Clear Channel Outdoor stock") sourcelang:english
+2026-05-10 13:16:19,212 | INFO | Ticker CCO fallback split window 2018-01-01 -> 2018-01-31 got 0 articles
+2026-05-10 13:16:19,271 | INFO | Ticker CCO reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 13:16:19,271 | INFO | Ticker CCO done. months_processed=1 kept_articles=0
+2026-05-10 13:16:39,287 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22Cross+Country+Healthcare%22+OR+%22Cross+C. Retry/skip.
+2026-05-10 13:17:04,044 | INFO | Ticker CCRN reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 13:17:04,045 | INFO | Ticker CCRN done. months_processed=1 kept_articles=14
+2026-05-10 13:17:32,635 | WARNING | GDELT status=429. Sleeping 15.8s then retry/skip. query=("Century Communities Inc" OR "Century Communities earnings" OR "Century Communities stock") sourcelang:english -"carbon capture" -"CCS technology"
+2026-05-10 13:18:08,428 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22Century+Communities+Inc%22+OR+%22Century+. Retry/skip.
+2026-05-10 13:18:32,868 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Read timed out. (read timeout=20). Retry/skip.
+2026-05-10 13:18:44,046 | WARNING | GDELT status=429. Sleeping 30.5s then retry/skip. query=("Century Communities Inc" OR "Century Communities earnings" OR "Century Communities stock") sourcelang:english -"carbon capture" -"CCS technology"
+2026-05-10 13:19:34,521 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%28%22Century+Communities+Inc%22+OR+%22Century+. Retry/skip.
+2026-05-10 13:19:50,589 | INFO | Ticker CCS fallback split window 2018-01-01 -> 2018-01-31 got 13 articles
+2026-05-10 13:19:50,655 | INFO | Ticker CCS reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 13:19:50,656 | INFO | Ticker CCS done. months_processed=1 kept_articles=13
+2026-05-10 13:20:26,709 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Read timed out. (read timeout=20). Retry/skip.
+2026-05-10 13:20:49,009 | INFO | Ticker TSLA reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 13:20:49,009 | INFO | Ticker TSLA done. months_processed=1 kept_articles=30
+2026-05-10 13:21:11,343 | WARNING | GDELT status=429. Sleeping 15.5s then retry/skip. query=("Netflix Inc" OR "Netflix earnings" OR "Netflix stock" OR "NFLX stock") sourcelang:english
+2026-05-10 13:21:35,019 | WARNING | GDELT status=429. Sleeping 30.8s then retry/skip. query=("Netflix Inc" OR "Netflix earnings" OR "Netflix stock" OR "NFLX stock") sourcelang:english
+2026-05-10 13:22:37,424 | WARNING | GDELT status=429. Sleeping 15.1s then retry/skip. query=("Netflix Inc" OR "Netflix earnings" OR "Netflix stock" OR "NFLX stock") sourcelang:english
+2026-05-10 13:23:04,700 | INFO | Ticker NFLX fallback split window 2018-01-01 -> 2018-01-31 got 160 articles
+2026-05-10 13:23:04,784 | INFO | Ticker NFLX reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 13:23:04,784 | INFO | Ticker NFLX done. months_processed=1 kept_articles=30
+2026-05-10 13:23:34,199 | INFO | Ticker MSFT reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 13:23:34,199 | INFO | Ticker MSFT done. months_processed=1 kept_articles=30
+2026-05-10 13:24:03,268 | INFO | Ticker META reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 13:24:03,270 | INFO | Ticker META done. months_processed=1 kept_articles=7
+2026-05-10 13:24:35,043 | INFO | Ticker GOOGL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 13:24:35,043 | INFO | Ticker GOOGL done. months_processed=1 kept_articles=30
+2026-05-10 13:25:03,703 | WARNING | GDELT status=429. Sleeping 15.9s then retry/skip. query=("Amazon.com Inc" OR "Amazon earnings" OR "Amazon stock" OR "AMZN stock") sourcelang:english -"Amazon rainforest" -"Amazon river"
+2026-05-10 13:25:35,303 | INFO | Ticker AMZN reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 13:25:35,303 | INFO | Ticker AMZN done. months_processed=1 kept_articles=30
+2026-05-10 13:25:35,389 | INFO | Saved metadata: data/processed/month_ticker_one_window_test/news_metadata_2018.parquet rows=637
+2026-05-10 13:25:35,459 | INFO | Saved full-text articles: data/processed/month_ticker_one_window_test/news_articles_fulltext_2018.parquet rows=0
+2026-05-10 13:25:35,460 | INFO | Saved failed fetch log: data/processed/month_ticker_one_window_test/news_article_fetch_failed_2018.parquet rows=637
+2026-05-10 14:07:23,758 | INFO | Ticker filter loaded from data/one_ticker_aapl.txt: requested=1, selected=1, missing_in_config=0
+2026-05-10 14:07:23,758 | INFO | Starting scraping-only pipeline year=2018
+2026-05-10 14:07:23,758 | INFO | Config=RuntimeConfig(year=2018, output_dir='data/processed/month_ticker_schema_test', log_dir='logs', universe_path='data/universe.json', tickers_file='data/one_ticker_aapl.txt', overwrite=True, max_articles_per_month=30, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=0, gdelt_maxrecords=80, gdelt_timeout=20, gdelt_retries=1, gdelt_sleep=0.05, min_request_interval=15.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, article_timeout=8, article_retries=1, article_workers=8, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 14:07:23,758 | INFO | Companies selected=1
+2026-05-10 14:07:23,758 | INFO | Ticker source file=data/one_ticker_aapl.txt
+2026-05-10 14:07:23,758 | INFO | Window days=30
+2026-05-10 14:07:23,758 | INFO | Max windows per ticker=0
+2026-05-10 14:07:32,961 | WARNING | GDELT status=429. Sleeping 15.3s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 14:08:09,771 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Read timed out. (read timeout=20). Retry/skip.
+2026-05-10 14:08:56,748 | WARNING | GDELT status=429. Sleeping 15.0s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 14:09:14,354 | WARNING | GDELT status=429. Sleeping 30.2s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 14:09:44,572 | INFO | Ticker AAPL fallback split window 2018-01-01 -> 2018-01-31 got 80 articles
+2026-05-10 14:09:46,014 | WARNING | GDELT status=429. Sleeping 15.9s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 14:10:05,166 | WARNING | GDELT status=429. Sleeping 30.0s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 14:10:38,510 | WARNING | GDELT status=429. Sleeping 15.4s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 14:10:58,708 | WARNING | GDELT status=429. Sleeping 30.9s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 14:11:36,005 | INFO | Ticker AAPL fallback split window 2018-01-31 -> 2018-03-02 got 80 articles
+2026-05-10 14:12:38,267 | WARNING | GDELT status=429. Sleeping 15.2s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 14:13:16,131 | WARNING | GDELT status=429. Sleeping 15.6s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 14:13:56,554 | WARNING | GDELT status=429. Sleeping 15.2s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 14:13:59,096 | INFO | Ticker filter loaded from data/one_ticker_aapl.txt: requested=1, selected=1, missing_in_config=0
+2026-05-10 14:13:59,096 | INFO | Starting scraping-only pipeline year=2018
+2026-05-10 14:13:59,096 | INFO | Config=RuntimeConfig(year=2018, output_dir='data/processed/month_ticker_schema_test', log_dir='logs', universe_path='data/universe.json', tickers_file='data/one_ticker_aapl.txt', overwrite=True, max_articles_per_month=30, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=1, gdelt_maxrecords=80, gdelt_timeout=20, gdelt_retries=1, gdelt_sleep=0.05, min_request_interval=15.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, article_timeout=8, article_retries=1, article_workers=8, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 14:13:59,096 | INFO | Companies selected=1
+2026-05-10 14:13:59,096 | INFO | Ticker source file=data/one_ticker_aapl.txt
+2026-05-10 14:13:59,096 | INFO | Window days=30
+2026-05-10 14:13:59,096 | INFO | Max windows per ticker=1
+2026-05-10 14:14:03,933 | INFO | Ticker AAPL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 14:14:03,934 | INFO | Ticker AAPL done. months_processed=1 kept_articles=30
+2026-05-10 14:14:03,987 | INFO | Saved metadata: data/processed/month_ticker_schema_test/news_metadata_2018.parquet rows=30
+2026-05-10 14:14:03,997 | INFO | Saved full-text articles: data/processed/month_ticker_schema_test/news_articles_fulltext_2018.parquet rows=0
+2026-05-10 14:14:03,997 | INFO | Saved failed fetch log: data/processed/month_ticker_schema_test/news_article_fetch_failed_2018.parquet rows=30
+2026-05-10 14:14:04,002 | INFO | Saved sample-style JSON: data/processed/month_ticker_schema_test/sample_guardian_news_2018.json rows=30
+2026-05-10 14:14:13,003 | WARNING | GDELT status=429. Sleeping 30.9s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 14:14:44,983 | WARNING | GDELT status=429. Sleeping 15.2s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 14:15:03,794 | WARNING | GDELT status=429. Sleeping 30.2s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 14:15:39,670 | WARNING | GDELT status=429. Sleeping 15.1s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 14:15:57,588 | WARNING | GDELT status=429. Sleeping 30.7s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 14:16:28,248 | INFO | Ticker AAPL fallback split window 2018-06-30 -> 2018-07-30 got 0 articles
+2026-05-10 14:16:30,871 | WARNING | GDELT status=429. Sleeping 15.5s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 14:16:49,344 | WARNING | GDELT status=429. Sleeping 30.4s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 14:19:07,658 | INFO | Ticker filter loaded from data/one_ticker_aapl.txt: requested=1, selected=1, missing_in_config=0
+2026-05-10 14:19:07,659 | INFO | Starting scraping-only pipeline year=2018
+2026-05-10 14:19:07,659 | INFO | Config=RuntimeConfig(year=2018, output_dir='data/processed/month_ticker_schema_test', log_dir='logs', universe_path='data/universe.json', tickers_file='data/one_ticker_aapl.txt', overwrite=True, max_articles_per_month=3, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=1, gdelt_maxrecords=10, gdelt_timeout=20, gdelt_retries=1, gdelt_sleep=0.05, min_request_interval=2.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, article_timeout=8, article_retries=1, article_workers=4, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, guardian_api_key='test', guardian_timeout=10, guardian_retries=1, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 14:19:07,659 | INFO | Companies selected=1
+2026-05-10 14:19:07,659 | INFO | Ticker source file=data/one_ticker_aapl.txt
+2026-05-10 14:19:07,659 | INFO | Window days=30
+2026-05-10 14:19:07,659 | INFO | Max windows per ticker=1
+2026-05-10 14:19:11,625 | INFO | Ticker AAPL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 14:19:11,626 | INFO | Ticker AAPL done. months_processed=1 kept_articles=3
+2026-05-10 14:19:11,671 | INFO | Saved metadata: data/processed/month_ticker_schema_test/news_metadata_2018.parquet rows=3
+2026-05-10 14:19:11,679 | INFO | Saved full-text articles: data/processed/month_ticker_schema_test/news_articles_fulltext_2018.parquet rows=0
+2026-05-10 14:19:11,679 | INFO | Saved failed fetch log: data/processed/month_ticker_schema_test/news_article_fetch_failed_2018.parquet rows=3
+2026-05-10 14:19:11,681 | INFO | Saved sample-style JSON: data/processed/month_ticker_schema_test/sample_guardian_news_2018.json rows=3
+2026-05-10 14:20:15,720 | INFO | Ticker filter loaded from data/one_ticker_aapl.txt: requested=1, selected=1, missing_in_config=0
+2026-05-10 14:20:15,720 | INFO | Starting scraping-only pipeline year=2018
+2026-05-10 14:20:15,720 | INFO | Config=RuntimeConfig(year=2018, output_dir='/Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test', log_dir='logs', universe_path='data/universe.json', tickers_file='data/one_ticker_aapl.txt', overwrite=True, max_articles_per_month=3, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=1, gdelt_maxrecords=10, gdelt_timeout=20, gdelt_retries=1, gdelt_sleep=0.05, min_request_interval=2.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, article_timeout=8, article_retries=1, article_workers=4, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, guardian_api_key='test', guardian_timeout=10, guardian_retries=1, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 14:20:15,721 | INFO | Companies selected=1
+2026-05-10 14:20:15,721 | INFO | Ticker source file=data/one_ticker_aapl.txt
+2026-05-10 14:20:15,721 | INFO | Window days=30
+2026-05-10 14:20:15,721 | INFO | Max windows per ticker=1
+2026-05-10 14:20:35,480 | INFO | Ticker AAPL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 14:20:35,481 | INFO | Ticker AAPL done. months_processed=1 kept_articles=3
+2026-05-10 14:20:35,550 | INFO | Saved metadata: /Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test/news_metadata_2018.parquet rows=3
+2026-05-10 14:20:35,559 | INFO | Saved full-text articles: /Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test/news_articles_fulltext_2018.parquet rows=0
+2026-05-10 14:20:35,559 | INFO | Saved failed fetch log: /Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test/news_article_fetch_failed_2018.parquet rows=3
+2026-05-10 14:20:35,562 | INFO | Saved sample-style JSON: /Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test/sample_guardian_news_2018.json rows=3
+2026-05-10 14:21:31,368 | INFO | Ticker filter loaded from data/one_ticker_aapl.txt: requested=1, selected=1, missing_in_config=0
+2026-05-10 14:21:31,369 | INFO | Starting scraping-only pipeline year=2018
+2026-05-10 14:21:31,369 | INFO | Config=RuntimeConfig(year=2018, output_dir='/Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test', log_dir='logs', universe_path='data/universe.json', tickers_file='data/one_ticker_aapl.txt', overwrite=True, max_articles_per_month=5, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=1, gdelt_maxrecords=20, gdelt_timeout=20, gdelt_retries=1, gdelt_sleep=0.05, min_request_interval=2.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, gdelt_domain_filter='theguardian.com', article_timeout=8, article_retries=1, article_workers=4, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, guardian_api_key='test', guardian_timeout=10, guardian_retries=1, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 14:21:31,369 | INFO | Companies selected=1
+2026-05-10 14:21:31,369 | INFO | Ticker source file=data/one_ticker_aapl.txt
+2026-05-10 14:21:31,369 | INFO | Window days=30
+2026-05-10 14:21:31,369 | INFO | Max windows per ticker=1
+2026-05-10 14:21:37,768 | WARNING | GDELT status=429. Sleeping 2.5s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english domainis:theguardian.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 14:21:47,101 | INFO | Ticker AAPL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 14:21:47,101 | INFO | Ticker AAPL done. months_processed=1 kept_articles=2
+2026-05-10 14:21:47,157 | INFO | Saved metadata: /Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test/news_metadata_2018.parquet rows=2
+2026-05-10 14:21:50,682 | INFO | Saved full-text articles: /Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test/news_articles_fulltext_2018.parquet rows=2
+2026-05-10 14:21:50,682 | INFO | Saved failed fetch log: /Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test/news_article_fetch_failed_2018.parquet rows=0
+2026-05-10 14:21:50,687 | INFO | Saved sample-style JSON: /Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test/sample_guardian_news_2018.json rows=2
+2026-05-10 16:00:23,981 | INFO | Ticker filter loaded from data/one_ticker_aapl.txt: requested=1, selected=1, missing_in_config=0
+2026-05-10 16:00:23,981 | INFO | Starting scraping-only pipeline year=2018
+2026-05-10 16:00:23,981 | INFO | Config=RuntimeConfig(year=2018, output_dir='/Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test', log_dir='logs', universe_path='data/universe.json', tickers_file='data/one_ticker_aapl.txt', overwrite=True, max_articles_per_month=30, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=1, gdelt_maxrecords=80, gdelt_timeout=20, gdelt_retries=1, gdelt_sleep=0.05, min_request_interval=15.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, gdelt_domain_filter='theguardian.com', article_timeout=8, article_retries=1, article_workers=8, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, guardian_api_key='test', guardian_timeout=10, guardian_retries=1, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 16:00:23,981 | INFO | Companies selected=1
+2026-05-10 16:00:23,981 | INFO | Ticker source file=data/one_ticker_aapl.txt
+2026-05-10 16:00:23,981 | INFO | Window days=30
+2026-05-10 16:00:23,981 | INFO | Max windows per ticker=1
+2026-05-10 16:00:31,759 | WARNING | GDELT status=429. Sleeping 15.5s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english domainis:theguardian.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:00:54,061 | WARNING | GDELT status=429. Sleeping 30.4s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english domainis:theguardian.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:01:35,709 | WARNING | GDELT status=429. Sleeping 16.0s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english domainis:theguardian.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:02:03,299 | WARNING | GDELT status=429. Sleeping 30.3s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english domainis:theguardian.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:02:41,600 | INFO | Ticker AAPL fallback split window 2018-01-01 -> 2018-01-31 got 0 articles
+2026-05-10 16:02:41,657 | INFO | Ticker AAPL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 16:02:41,657 | INFO | Ticker AAPL done. months_processed=1 kept_articles=0
+2026-05-10 16:06:04,928 | INFO | Ticker filter loaded from data/one_ticker_aapl.txt: requested=1, selected=1, missing_in_config=0
+2026-05-10 16:06:04,928 | INFO | Starting scraping-only pipeline year=2018
+2026-05-10 16:06:04,928 | INFO | Config=RuntimeConfig(year=2018, output_dir='/Users/qiang/Desktop/INDENG242B-Final-Project/tmp_nodata_test', log_dir='logs', universe_path='data/universe.json', tickers_file='data/one_ticker_aapl.txt', overwrite=True, max_articles_per_month=5, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=1, gdelt_maxrecords=10, gdelt_timeout=20, gdelt_retries=0, gdelt_sleep=0.05, min_request_interval=7.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, gdelt_domain_filter='example.com', article_timeout=5, article_retries=0, article_workers=16, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, guardian_api_key='test', guardian_timeout=10, guardian_retries=1, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 16:06:04,928 | INFO | Companies selected=1
+2026-05-10 16:06:04,928 | INFO | Ticker source file=data/one_ticker_aapl.txt
+2026-05-10 16:06:04,928 | INFO | Window days=30
+2026-05-10 16:06:04,928 | INFO | Max windows per ticker=1
+2026-05-10 16:06:04,928 | INFO | Effective min_request_interval=7.0 seconds
+2026-05-10 16:06:09,351 | WARNING | GDELT status=429. Sleeping 7.6s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english domainis:example.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:06:20,259 | WARNING | GDELT status=429. Sleeping 7.4s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english domainis:example.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:06:30,646 | WARNING | GDELT status=429. Sleeping 7.2s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english domainis:example.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:06:37,834 | INFO | Ticker AAPL fallback split window 2018-01-01 -> 2018-01-31 got 0 articles
+2026-05-10 16:06:37,885 | INFO | Ticker AAPL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 16:06:37,885 | INFO | Ticker AAPL done. months_processed=1 kept_articles=0
+2026-05-10 16:06:37,932 | WARNING | No GDELT metadata collected for year=2018. Wrote empty metadata files.
+2026-05-10 16:07:43,607 | INFO | Ticker filter loaded from data/one_ticker_aapl.txt: requested=1, selected=1, missing_in_config=0
+2026-05-10 16:07:43,607 | INFO | Starting scraping-only pipeline year=2018
+2026-05-10 16:07:43,607 | INFO | Config=RuntimeConfig(year=2018, output_dir='/Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test', log_dir='logs', universe_path='data/universe.json', tickers_file='data/one_ticker_aapl.txt', overwrite=True, max_articles_per_month=30, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=1, gdelt_maxrecords=80, gdelt_timeout=20, gdelt_retries=1, gdelt_sleep=0.05, min_request_interval=7.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, gdelt_domain_filter='theguardian.com', article_timeout=8, article_retries=1, article_workers=8, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, guardian_api_key='test', guardian_timeout=10, guardian_retries=1, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 16:07:43,607 | INFO | Companies selected=1
+2026-05-10 16:07:43,607 | INFO | Ticker source file=data/one_ticker_aapl.txt
+2026-05-10 16:07:43,607 | INFO | Window days=30
+2026-05-10 16:07:43,607 | INFO | Max windows per ticker=1
+2026-05-10 16:07:43,607 | INFO | Effective min_request_interval=7.0 seconds
+2026-05-10 16:07:46,780 | INFO | Ticker AAPL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 16:07:46,780 | INFO | Ticker AAPL done. months_processed=1 kept_articles=2
+2026-05-10 16:07:46,830 | INFO | Saved metadata: /Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test/news_metadata_2018.parquet rows=2
+2026-05-10 16:07:47,653 | INFO | Saved full-text articles: /Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test/news_articles_fulltext_2018.parquet rows=2
+2026-05-10 16:07:47,653 | INFO | Saved failed fetch log: /Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test/news_article_fetch_failed_2018.parquet rows=0
+2026-05-10 16:07:47,657 | INFO | Saved sample-style JSON: /Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test/sample_guardian_news_2018.json rows=2
+2026-05-10 16:11:48,987 | INFO | Ticker filter loaded from data/one_ticker_aapl.txt: requested=1, selected=1, missing_in_config=0
+2026-05-10 16:11:48,987 | INFO | Starting scraping-only pipeline year=2018
+2026-05-10 16:11:48,988 | INFO | Config=RuntimeConfig(year=2018, output_dir='/Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test', log_dir='logs', universe_path='data/universe.json', tickers_file='data/one_ticker_aapl.txt', overwrite=True, max_articles_per_month=30, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=0, gdelt_maxrecords=80, gdelt_timeout=20, gdelt_retries=1, gdelt_sleep=0.05, min_request_interval=7.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, gdelt_domain_filter='theguardian.com', article_timeout=8, article_retries=1, article_workers=8, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, guardian_api_key='test', guardian_timeout=10, guardian_retries=1, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 16:11:48,988 | INFO | Companies selected=1
+2026-05-10 16:11:48,988 | INFO | Ticker source file=data/one_ticker_aapl.txt
+2026-05-10 16:11:48,988 | INFO | Window days=30
+2026-05-10 16:11:48,988 | INFO | Max windows per ticker=0
+2026-05-10 16:11:48,988 | INFO | Effective min_request_interval=7.0 seconds
+2026-05-10 16:11:53,756 | WARNING | GDELT status=429. Sleeping 7.7s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english domainis:theguardian.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:12:19,835 | INFO | Ticker filter loaded from data/one_ticker_aapl.txt: requested=1, selected=1, missing_in_config=0
+2026-05-10 16:12:19,835 | INFO | Starting scraping-only pipeline year=2018
+2026-05-10 16:12:19,835 | INFO | Config=RuntimeConfig(year=2018, output_dir='/Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test', log_dir='logs', universe_path='data/universe.json', tickers_file='data/one_ticker_aapl.txt', overwrite=True, max_articles_per_month=30, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=0, gdelt_maxrecords=250, gdelt_timeout=20, gdelt_retries=1, gdelt_sleep=0.05, min_request_interval=7.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, gdelt_domain_filter='theguardian.com', article_timeout=8, article_retries=1, article_workers=8, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, guardian_api_key='test', guardian_timeout=10, guardian_retries=1, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 16:12:19,835 | INFO | Companies selected=1
+2026-05-10 16:12:19,835 | INFO | Ticker source file=data/one_ticker_aapl.txt
+2026-05-10 16:12:19,835 | INFO | Window days=30
+2026-05-10 16:12:19,835 | INFO | Max windows per ticker=0
+2026-05-10 16:12:19,835 | INFO | Effective min_request_interval=7.0 seconds
+2026-05-10 16:13:14,581 | WARNING | GDELT status=429. Sleeping 7.7s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english domainis:theguardian.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:13:34,043 | WARNING | GDELT status=429. Sleeping 14.3s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english domainis:theguardian.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:14:17,577 | INFO | Ticker AAPL fallback split window 2018-03-02 -> 2018-04-01 got 0 articles
+2026-05-10 16:14:28,497 | WARNING | GDELT status=429. Sleeping 8.0s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english domainis:theguardian.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:14:50,624 | WARNING | GDELT status=429. Sleeping 7.1s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english domainis:theguardian.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:15:00,646 | WARNING | GDELT status=429. Sleeping 15.0s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english domainis:theguardian.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:15:37,859 | WARNING | GDELT status=429. Sleeping 7.7s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english domainis:theguardian.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:15:49,707 | WARNING | GDELT status=429. Sleeping 14.8s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock") sourcelang:english domainis:theguardian.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:16:04,555 | INFO | Ticker AAPL fallback split window 2018-05-01 -> 2018-05-31 got 0 articles
+2026-05-10 16:16:34,184 | INFO | Ticker filter loaded from data/one_ticker_aapl.txt: requested=1, selected=1, missing_in_config=0
+2026-05-10 16:16:34,185 | INFO | Starting scraping-only pipeline year=2018
+2026-05-10 16:16:34,185 | INFO | Config=RuntimeConfig(year=2018, output_dir='/Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test', log_dir='logs', universe_path='data/universe.json', tickers_file='data/one_ticker_aapl.txt', overwrite=True, max_articles_per_month=30, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=1, gdelt_maxrecords=250, gdelt_timeout=20, gdelt_retries=1, gdelt_sleep=0.05, min_request_interval=7.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, gdelt_domain_filter='theguardian.com', article_timeout=8, article_retries=1, article_workers=8, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, guardian_api_key='test', guardian_timeout=10, guardian_retries=1, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 16:16:34,185 | INFO | Companies selected=1
+2026-05-10 16:16:34,185 | INFO | Ticker source file=data/one_ticker_aapl.txt
+2026-05-10 16:16:34,185 | INFO | Window days=30
+2026-05-10 16:16:34,185 | INFO | Max windows per ticker=1
+2026-05-10 16:16:34,185 | INFO | Effective min_request_interval=7.0 seconds
+2026-05-10 16:16:37,093 | WARNING | GDELT status=429. Sleeping 7.5s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock" OR "Apple Inc." OR "Apple" OR "AAPL stock" OR "AAPL") sourcelang:english domainis:theguardian.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:16:48,651 | WARNING | GDELT status=429. Sleeping 14.7s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock" OR "Apple Inc." OR "Apple" OR "AAPL stock" OR "AAPL") sourcelang:english domainis:theguardian.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:17:07,529 | WARNING | GDELT status=429. Sleeping 7.9s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock" OR "Apple Inc." OR "Apple" OR "AAPL stock" OR "AAPL") sourcelang:english domainis:theguardian.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:17:20,502 | WARNING | GDELT JSON parse error: The specified phrase is too short.
+
+2026-05-10 16:17:31,795 | WARNING | GDELT JSON parse error: The specified phrase is too short.
+
+2026-05-10 16:17:31,795 | WARNING | Retry after parse error in 2.6s. query=("Apple Inc" OR "Apple earnings" OR "Apple stock" OR "Apple Inc." OR "Apple" OR "AAPL stock" OR "AAPL") sourcelang:english domainis:theguardian.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:17:42,326 | WARNING | GDELT status=429. Sleeping 14.9s then retry/skip. query=("Apple Inc" OR "Apple earnings" OR "Apple stock" OR "Apple Inc." OR "Apple" OR "AAPL stock" OR "AAPL") sourcelang:english domainis:theguardian.com -"apple pie" -"apple orchard" -"apple cider" -"Apple Records"
+2026-05-10 16:17:57,222 | INFO | Ticker AAPL fallback split window 2018-01-01 -> 2018-01-31 got 0 articles
+2026-05-10 16:17:57,277 | INFO | Ticker AAPL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 16:17:57,278 | INFO | Ticker AAPL done. months_processed=1 kept_articles=0
+2026-05-10 16:17:57,335 | WARNING | No GDELT metadata collected for year=2018. Wrote empty metadata files.
+2026-05-10 16:19:51,954 | INFO | Ticker filter loaded from data/one_ticker_aapl.txt: requested=1, selected=1, missing_in_config=0
+2026-05-10 16:19:51,954 | INFO | Starting scraping-only pipeline year=2018
+2026-05-10 16:19:51,955 | INFO | Config=RuntimeConfig(year=2018, output_dir='/Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test', log_dir='logs', universe_path='data/universe.json', tickers_file='data/one_ticker_aapl.txt', overwrite=True, max_articles_per_month=30, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=1, gdelt_maxrecords=250, gdelt_timeout=20, gdelt_retries=1, gdelt_sleep=0.05, min_request_interval=7.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, gdelt_domain_filter='theguardian.com', article_timeout=8, article_retries=1, article_workers=8, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, guardian_api_key='test', guardian_timeout=10, guardian_retries=1, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 16:19:51,955 | INFO | Companies selected=1
+2026-05-10 16:19:51,955 | INFO | Ticker source file=data/one_ticker_aapl.txt
+2026-05-10 16:19:51,955 | INFO | Window days=30
+2026-05-10 16:19:51,955 | INFO | Max windows per ticker=1
+2026-05-10 16:19:51,955 | INFO | Effective min_request_interval=7.0 seconds
+2026-05-10 16:19:53,731 | WARNING | GDELT status=429. Sleeping 8.0s then retry/skip. query=("Apple Inc." OR "Apple Inc" OR "Apple" OR "AAPL") sourcelang:english domainis:theguardian.com
+2026-05-10 16:20:07,449 | WARNING | GDELT status=429. Sleeping 14.4s then retry/skip. query=("Apple Inc." OR "Apple Inc" OR "Apple" OR "AAPL") sourcelang:english domainis:theguardian.com
+2026-05-10 16:20:27,554 | WARNING | GDELT JSON parse error: The specified phrase is too short.
+
+2026-05-10 16:20:27,555 | WARNING | Retry after parse error in 2.2s. query=("Apple Inc." OR "Apple Inc" OR "Apple" OR "AAPL") sourcelang:english domainis:theguardian.com
+2026-05-10 16:20:38,170 | WARNING | GDELT status=429. Sleeping 14.0s then retry/skip. query=("Apple Inc." OR "Apple Inc" OR "Apple" OR "AAPL") sourcelang:english domainis:theguardian.com
+2026-05-10 16:20:55,058 | WARNING | GDELT JSON parse error: The specified phrase is too short.
+
+2026-05-10 16:20:55,060 | WARNING | Retry after parse error in 2.2s. query=("Apple Inc." OR "Apple Inc" OR "Apple" OR "AAPL") sourcelang:english domainis:theguardian.com
+2026-05-10 16:21:04,584 | WARNING | GDELT status=429. Sleeping 14.2s then retry/skip. query=("Apple Inc." OR "Apple Inc" OR "Apple" OR "AAPL") sourcelang:english domainis:theguardian.com
+2026-05-10 16:21:18,801 | INFO | Ticker AAPL fallback split window 2018-01-01 -> 2018-01-31 got 0 articles
+2026-05-10 16:21:18,859 | INFO | Ticker AAPL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 16:21:18,859 | INFO | Ticker AAPL done. months_processed=1 kept_articles=0
+2026-05-10 16:21:18,914 | WARNING | No GDELT metadata collected for year=2018. Wrote empty metadata files.
+2026-05-10 16:28:21,954 | INFO | Ticker filter loaded from data/one_ticker_aapl.txt: requested=1, selected=1, missing_in_config=0
+2026-05-10 16:28:21,955 | INFO | Starting scraping-only pipeline year=2018
+2026-05-10 16:28:21,955 | INFO | Config=RuntimeConfig(year=2018, output_dir='/Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test', log_dir='logs', universe_path='data/universe.json', tickers_file='data/one_ticker_aapl.txt', overwrite=True, max_articles_per_month=30, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=1, gdelt_maxrecords=250, gdelt_timeout=15, gdelt_retries=3, gdelt_sleep=0.05, min_request_interval=8.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, gdelt_domain_filter='theguardian.com', article_timeout=8, article_retries=1, article_workers=8, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, guardian_api_key='test', guardian_timeout=10, guardian_retries=1, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 16:28:21,955 | INFO | Companies selected=1
+2026-05-10 16:28:21,955 | INFO | Ticker source file=data/one_ticker_aapl.txt
+2026-05-10 16:28:21,955 | INFO | Window days=30
+2026-05-10 16:28:21,955 | INFO | Max windows per ticker=1
+2026-05-10 16:28:21,955 | INFO | Effective min_request_interval=8.0 seconds
+2026-05-10 16:28:22,863 | WARNING | GDELT status=429. Sleeping 8.7s then retry/skip. query="Apple Inc." sourcelang:english domainis:theguardian.com
+2026-05-10 16:28:32,333 | WARNING | GDELT status=429. Sleeping 16.2s then retry/skip. query="Apple Inc." sourcelang:english domainis:theguardian.com
+2026-05-10 16:28:49,286 | WARNING | GDELT status=429. Sleeping 24.3s then retry/skip. query="Apple Inc." sourcelang:english domainis:theguardian.com
+2026-05-10 16:29:14,825 | WARNING | GDELT status=429. Sleeping 32.8s then retry/skip. query="Apple Inc." sourcelang:english domainis:theguardian.com
+2026-05-10 16:29:48,779 | WARNING | GDELT status=429. Sleeping 8.6s then retry/skip. query="Apple Inc." sourcelang:english domainis:theguardian.com
+2026-05-10 16:29:58,001 | WARNING | GDELT status=429. Sleeping 16.8s then retry/skip. query="Apple Inc." sourcelang:english domainis:theguardian.com
+2026-05-10 16:30:39,514 | WARNING | GDELT status=429. Sleeping 8.3s then retry/skip. query="Apple Inc." sourcelang:english domainis:theguardian.com
+2026-05-10 16:30:58,278 | WARNING | GDELT status=429. Sleeping 16.2s then retry/skip. query="Apple Inc." sourcelang:english domainis:theguardian.com
+2026-05-10 16:31:24,805 | INFO | Ticker AAPL fallback split window 2018-01-01 -> 2018-01-31 got 0 articles
+2026-05-10 16:31:24,865 | INFO | Ticker AAPL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 16:31:24,866 | INFO | Ticker AAPL done. months_processed=1 kept_articles=0
+2026-05-10 16:31:25,641 | WARNING | No GDELT metadata collected for year=2018. Wrote empty metadata files.

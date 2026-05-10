@@ -1,0 +1,21 @@
+{
+  "tickers": [
+    "AAPL"
+  ],
+  "companies": [
+    {
+      "ticker": "AAPL",
+      "company_name": "Apple Inc.",
+      "entity_match_patterns": [
+        "Apple Inc",
+        "Apple",
+        "iPhone",
+        "MacBook",
+        "Apple Watch",
+        "Tim Cook",
+        "Apple Inc.",
+        "AAPL"
+      ]
+    }
+  ]
+}
