@@ -1,81 +1,40 @@
 #!/usr/bin/env python3
 """
-Scrape Guardian company news for a ticker list and save yearly JSON files.
+Scrape GDELT news for a fixed ticker list and export one JSON file per year.
+
+No API key is required for GDELT DOC API.
 
 Example:
   python scrape_guardian_news.py \
     --tickers-file tickers.txt \
-    --output-dir data \
     --start-year 2018 \
-    --end-year 2025
-
-Requires:
-  - GUARDIAN_API_KEY in environment (or pass --api-key)
+    --end-year 2026 \
+    --output-dir data
 """
 
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
-import os
 import time
-from datetime import date
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
 
-import requests
-
-API_URL = "https://content.guardianapis.com/search"
-
-# Optional aliases improve relevance beyond ticker-only matching.
-TICKER_ALIASES: dict[str, list[str]] = {
-    "AAPL": ["Apple", "Apple Inc", "AAPL"],
-    "AAL": ["American Airlines", "AAL"],
-    "ABEO": ["Abeona Therapeutics", "ABEO"],
-    "ABNB": ["Airbnb", "Airbnb Inc", "ABNB"],
-    "ACAD": ["ACADIA Pharmaceuticals", "ACAD"],
-    "ACGL": ["Arch Capital Group", "ACGL"],
-    "ACHC": ["Acadia Healthcare", "ACHC"],
-    "ACHV": ["Achieve Life Sciences", "ACHV"],
-    "ACLS": ["Axcelis Technologies", "ACLS"],
-    "ACMR": ["ACM Research", "ACMR"],
-    "ACRS": ["Aclaris Therapeutics", "ACRS"],
-    "ADBE": ["Adobe", "Adobe Inc", "ADBE"],
-    "ADI": ["Analog Devices", "ADI"],
-    "ADIL": ["Adial Pharmaceuticals", "ADIL"],
-    "ADMA": ["ADMA Biologics", "ADMA"],
-    "ADP": ["Automatic Data Processing", "ADP"],
-    "ADSK": ["Autodesk", "ADSK"],
-    "AEHR": ["Aehr Test Systems", "AEHR"],
-    "AEIS": ["Advanced Energy Industries", "AEIS"],
-    "AEP": ["American Electric Power", "AEP"],
-    "AERO": ["AERO"],
-    "CCO": ["Clear Channel Outdoor", "CCO"],
-    "CCRN": ["Cross Country Healthcare", "CCRN"],
-    "CCS": ["Century Communities", "CCS"],
-    "TSLA": ["Tesla", "Tesla Inc", "TSLA", "Elon Musk"],
-    "NFLX": ["Netflix", "NFLX"],
-    "MSFT": ["Microsoft", "Microsoft Corporation", "MSFT"],
-    "META": ["Meta", "Meta Platforms", "Facebook", "META"],
-    "GOOGL": ["Alphabet", "Google", "GOOGL"],
-    "AMZN": ["Amazon", "Amazon.com", "AMZN", "AWS"],
-}
+GDELT_DOC_API = "https://api.gdeltproject.org/api/v2/doc/doc"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Download Guardian news by ticker and write yearly JSON files."
+        description="Scrape GDELT news for each ticker and write yearly JSON files."
     )
     parser.add_argument(
         "--tickers-file",
-        default="tickers.txt",
-        help="Path to ticker file (one symbol per line).",
-    )
-    parser.add_argument(
-        "--output-dir",
-        default="data",
-        help="Directory for guardian_news_<year>.json outputs.",
+        type=Path,
+        default=Path("tickers.txt"),
+        help="Path to newline-separated ticker file.",
     )
     parser.add_argument(
         "--start-year",
@@ -86,251 +45,441 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--end-year",
         type=int,
-        default=date.today().year,
+        default=2026,
         help="Last year to scrape (inclusive).",
     )
     parser.add_argument(
-        "--api-key",
-        default=os.getenv("GUARDIAN_API_KEY", "").strip(),
-        help="Guardian API key. Defaults to GUARDIAN_API_KEY env var.",
+        "--output-dir",
+        type=Path,
+        default=Path("data"),
+        help="Directory for yearly output JSON files.",
     )
     parser.add_argument(
-        "--page-size",
+        "--max-tickers",
         type=int,
-        default=200,
-        help="Guardian page size (max 200).",
+        default=0,
+        help="Optional cap for number of tickers to process (0 means all).",
+    )
+    parser.add_argument(
+        "--query-template",
+        type=str,
+        default="{ticker} AND sourcelang:english",
+        help=(
+            "GDELT query template. Available placeholder: {ticker}. "
+            "Example: '({ticker} OR Apple) AND (earnings OR stock) AND sourcelang:english'"
+        ),
+    )
+    parser.add_argument(
+        "--max-records",
+        type=int,
+        default=250,
+        help="Max records per GDELT ArtList query (usually <= 250).",
+    )
+    parser.add_argument(
+        "--min-request-interval",
+        type=float,
+        default=5.2,
+        help="Minimum seconds between any two GDELT requests.",
     )
     parser.add_argument(
         "--sleep-seconds",
         type=float,
-        default=0.15,
-        help="Pause between requests to reduce rate-limit risk.",
-    )
-    parser.add_argument(
-        "--request-timeout",
-        type=int,
-        default=40,
-        help="HTTP request timeout in seconds.",
+        default=0.0,
+        help="Extra sleep after each request.",
     )
     parser.add_argument(
         "--max-retries",
         type=int,
-        default=5,
-        help="Retries for transient request failures.",
+        default=6,
+        help="Retry attempts per request for transient errors.",
+    )
+    parser.add_argument(
+        "--max-backoff-seconds",
+        type=float,
+        default=120.0,
+        help="Maximum retry backoff seconds after throttling/server errors.",
+    )
+    parser.add_argument(
+        "--request-timeout",
+        type=float,
+        default=60.0,
+        help="HTTP timeout (seconds) for each request.",
+    )
+    parser.add_argument(
+        "--min-split-seconds",
+        type=int,
+        default=3600,
+        help=(
+            "If query returns max-records, split time window recursively until this floor "
+            "to reduce truncation."
+        ),
+    )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Print detailed request/retry/splitting debug logs.",
     )
     return parser.parse_args()
 
 
-def load_tickers(path: str) -> list[str]:
-    p = Path(path)
-    if not p.exists():
+def load_tickers(path: Path, max_tickers: int) -> list[str]:
+    if not path.exists():
         raise FileNotFoundError(f"Ticker file not found: {path}")
     tickers: list[str] = []
-    for line in p.read_text(encoding="utf-8").splitlines():
-        symbol = line.strip().upper()
-        if symbol and not symbol.startswith("#"):
-            tickers.append(symbol)
+    for line in path.read_text(encoding="utf-8").splitlines():
+        sym = line.strip().upper()
+        if not sym or sym.startswith("#"):
+            continue
+        tickers.append(sym)
     if not tickers:
-        raise ValueError("No tickers found in ticker file.")
+        raise ValueError(f"No tickers found in {path}")
+    if max_tickers > 0:
+        return tickers[:max_tickers]
     return tickers
 
 
-def build_query(ticker: str) -> str:
-    terms = TICKER_ALIASES.get(ticker, [ticker])
-    clauses = [f"\"{t}\"" if " " in t else t for t in terms]
-    return "(" + " OR ".join(clauses) + ")"
+def to_gdelt_dt(ts: datetime) -> str:
+    return ts.strftime("%Y%m%d%H%M%S")
 
 
-def request_with_retry(
-    session: requests.Session,
+def debug_log(enabled: bool, message: str) -> None:
+    if enabled:
+        print(f"[debug] {message}", flush=True)
+
+
+def request_gdelt_json(
     params: dict[str, Any],
-    timeout: int,
+    timeout: float,
     max_retries: int,
+    max_backoff_seconds: float,
+    min_request_interval: float,
+    sleep_seconds: float,
+    rate_state: dict[str, float],
+    debug: bool,
 ) -> dict[str, Any]:
-    attempt = 0
-    while True:
-        attempt += 1
+    last_error: Exception | None = None
+    query_str = urlencode(params)
+    url = f"{GDELT_DOC_API}?{query_str}"
+
+    for attempt in range(max_retries + 1):
         try:
-            resp = session.get(API_URL, params=params, timeout=timeout)
-            if resp.status_code in (429, 500, 502, 503, 504):
-                if attempt > max_retries:
-                    resp.raise_for_status()
-                backoff = min(60.0, 1.5**attempt)
-                print(
-                    f"  transient HTTP {resp.status_code}, retrying in {backoff:.1f}s..."
-                )
+            elapsed = time.time() - rate_state.get("last_request_ts", 0.0)
+            if elapsed < min_request_interval:
+                wait = min_request_interval - elapsed
+                debug_log(debug, f"rate guard sleeping {wait:.2f}s before next request")
+                time.sleep(wait)
+
+            debug_log(
+                debug,
+                (
+                    f"request attempt {attempt + 1}/{max_retries + 1} "
+                    f"window={params.get('startdatetime')}..{params.get('enddatetime')} "
+                    f"maxrecords={params.get('maxrecords')}"
+                ),
+            )
+
+            req = Request(url, headers={"User-Agent": "gdelt-news-scraper/1.0"})
+            with urlopen(req, timeout=timeout) as resp:
+                body = resp.read().decode("utf-8", errors="replace")
+            rate_state["last_request_ts"] = time.time()
+
+            body_stripped = body.strip()
+            body_lower = body_stripped.lower()
+            if "please limit requests to one every 5 seconds" in body_lower:
+                backoff = max(5.5, sleep_seconds * (2**attempt))
+                debug_log(debug, f"text throttle response; sleeping {backoff:.1f}s then retrying")
                 time.sleep(backoff)
-                continue
-            resp.raise_for_status()
-            return resp.json()
-        except requests.RequestException:
-            if attempt > max_retries:
-                raise
-            backoff = min(60.0, 1.5**attempt)
-            print(f"  request failed, retrying in {backoff:.1f}s...")
+                if attempt < max_retries:
+                    continue
+                raise RuntimeError("GDELT returned text throttle message repeatedly.")
+
+            if not body_stripped:
+                raise RuntimeError("GDELT returned empty response body.")
+            if not body_stripped.startswith("{"):
+                snippet = body_stripped[:240]
+                raise RuntimeError(f"GDELT returned non-JSON response: {snippet}")
+
+            payload = json.loads(body_stripped)
+            if sleep_seconds > 0:
+                debug_log(debug, f"post-request sleep {sleep_seconds:.2f}s")
+                time.sleep(sleep_seconds)
+            if not isinstance(payload, dict):
+                raise RuntimeError(f"Unexpected GDELT payload type: {type(payload)}")
+            debug_log(
+                debug,
+                f"response ok with {len(payload.get('articles', [])) if isinstance(payload.get('articles', []), list) else 0} articles",
+            )
+            return payload
+        except Exception as exc:  # noqa: BLE001
+            last_error = exc
+            if attempt >= max_retries:
+                break
+
+            code = getattr(exc, "code", None)
+            if code == 429:
+                backoff = max(10.0, min_request_interval * (2 ** (attempt + 1)))
+            elif isinstance(code, int) and 500 <= code < 600:
+                backoff = max(2.0, min_request_interval * (2**attempt))
+            else:
+                backoff = max(1.0, min_request_interval * (2**attempt))
+            backoff = min(backoff, max_backoff_seconds)
+            debug_log(debug, f"request failed: {exc}; retrying in {backoff:.1f}s")
             time.sleep(backoff)
+    raise RuntimeError(f"GDELT request failed after retries: {last_error}") from last_error
 
 
-def normalize_article(
+def fetch_articles_for_time_window(
     ticker: str,
     query: str,
-    year_start: str,
-    year_end: str,
-    item: dict[str, Any],
-) -> dict[str, Any]:
-    fields = item.get("fields") or {}
-    tags_in = item.get("tags") or []
-    tags = [
-        {
-            "id": t.get("id"),
-            "type": t.get("type"),
-            "webTitle": t.get("webTitle"),
-        }
-        for t in tags_in
-    ]
-
-    headline = fields.get("headline") or item.get("webTitle")
-    trail_text = fields.get("trailText")
-    body_text = fields.get("bodyText")
-    parts = [headline, trail_text, body_text]
-    text_for_finbert = " ".join(p.strip() for p in parts if isinstance(p, str) and p.strip())
-    guardian_id = item.get("id", "")
-    uid_seed = f"{ticker}|{guardian_id}|{item.get('webPublicationDate', '')}"
-    uid = hashlib.md5(uid_seed.encode("utf-8")).hexdigest()
-
-    return {
-        "uid": uid,
-        "ticker": ticker,
-        "webPublicationDate": item.get("webPublicationDate"),
-        "publication_date": (item.get("webPublicationDate") or "")[:10] or None,
-        "trading_date": None,
-        "guardian_id": guardian_id,
-        "type": item.get("type"),
-        "sectionId": item.get("sectionId"),
-        "sectionName": item.get("sectionName"),
-        "pillarId": item.get("pillarId"),
-        "pillarName": item.get("pillarName"),
-        "webTitle": item.get("webTitle"),
-        "webUrl": item.get("webUrl"),
-        "apiUrl": item.get("apiUrl"),
-        "headline": headline,
-        "trailText": trail_text,
-        "bodyText": body_text,
-        "text_for_finbert": text_for_finbert,
-        "wordcount": fields.get("wordcount"),
-        "guardian_tone": None,
-        "tags": tags,
+    start_dt: datetime,
+    end_dt: datetime,
+    max_records: int,
+    timeout: float,
+    max_retries: int,
+    max_backoff_seconds: float,
+    min_request_interval: float,
+    sleep_seconds: float,
+    min_split_seconds: int,
+    rate_state: dict[str, float],
+    debug: bool,
+    depth: int = 0,
+) -> list[dict[str, Any]]:
+    indent = "  " * depth
+    debug_log(
+        debug,
+        f"{indent}{ticker} window {to_gdelt_dt(start_dt)} -> {to_gdelt_dt(end_dt)}",
+    )
+    params = {
         "query": query,
-        "from_date_window": year_start,
-        "to_date_window": year_end,
-        "source": "guardian",
+        "mode": "ArtList",
+        "format": "json",
+        "maxrecords": max_records,
+        "startdatetime": to_gdelt_dt(start_dt),
+        "enddatetime": to_gdelt_dt(end_dt),
+    }
+    payload = request_gdelt_json(
+        params=params,
+        timeout=timeout,
+        max_retries=max_retries,
+        max_backoff_seconds=max_backoff_seconds,
+        min_request_interval=min_request_interval,
+        sleep_seconds=sleep_seconds,
+        rate_state=rate_state,
+        debug=debug,
+    )
+    articles = payload.get("articles", [])
+    if not isinstance(articles, list):
+        articles = []
+
+    span_seconds = int((end_dt - start_dt).total_seconds())
+    if len(articles) < max_records or span_seconds <= max(min_split_seconds, 1):
+        debug_log(
+            debug,
+            f"{indent}returning {len(articles)} articles (span_seconds={span_seconds})",
+        )
+        return articles
+
+    debug_log(
+        debug,
+        (
+            f"{indent}hit max_records={max_records} for {ticker}; "
+            f"splitting window (span_seconds={span_seconds})"
+        ),
+    )
+    mid = start_dt + (end_dt - start_dt) / 2
+    left_end = mid
+    right_start = mid
+    left = fetch_articles_for_time_window(
+        ticker=ticker,
+        query=query,
+        start_dt=start_dt,
+        end_dt=left_end,
+        max_records=max_records,
+        timeout=timeout,
+        max_retries=max_retries,
+        max_backoff_seconds=max_backoff_seconds,
+        min_request_interval=min_request_interval,
+        sleep_seconds=sleep_seconds,
+        min_split_seconds=min_split_seconds,
+        rate_state=rate_state,
+        debug=debug,
+        depth=depth + 1,
+    )
+    right = fetch_articles_for_time_window(
+        ticker=ticker,
+        query=query,
+        start_dt=right_start,
+        end_dt=end_dt,
+        max_records=max_records,
+        timeout=timeout,
+        max_retries=max_retries,
+        max_backoff_seconds=max_backoff_seconds,
+        min_request_interval=min_request_interval,
+        sleep_seconds=sleep_seconds,
+        min_split_seconds=min_split_seconds,
+        rate_state=rate_state,
+        debug=debug,
+        depth=depth + 1,
+    )
+    debug_log(debug, f"{indent}merged split windows => {len(left) + len(right)} articles")
+    return left + right
+
+
+def normalize_article(ticker: str, year: int, item: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "ticker": ticker,
+        "year": year,
+        "url": item.get("url"),
+        "url_mobile": item.get("url_mobile"),
+        "title": item.get("title"),
+        "seendate": item.get("seendate"),
+        "socialimage": item.get("socialimage"),
+        "domain": item.get("domain"),
+        "language": item.get("language"),
+        "sourcecountry": item.get("sourcecountry"),
     }
 
 
-def fetch_ticker_year(
-    session: requests.Session,
+def fetch_ticker_year_articles(
     ticker: str,
     year: int,
-    api_key: str,
-    page_size: int,
-    timeout: int,
+    query_template: str,
+    max_records: int,
+    timeout: float,
     max_retries: int,
+    max_backoff_seconds: float,
+    min_request_interval: float,
     sleep_seconds: float,
+    min_split_seconds: int,
+    rate_state: dict[str, float],
+    debug: bool,
 ) -> list[dict[str, Any]]:
-    year_start = f"{year}-01-01"
-    year_end = f"{year}-12-31"
-    query = build_query(ticker)
+    start_dt = datetime(year, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+    end_dt = datetime(year, 12, 31, 23, 59, 59, tzinfo=timezone.utc)
+    query = query_template.format(ticker=ticker)
+    debug_log(debug, f"{ticker} year={year} query={query}")
+    raw_articles = fetch_articles_for_time_window(
+        ticker=ticker,
+        query=query,
+        start_dt=start_dt,
+        end_dt=end_dt,
+        max_records=max_records,
+        timeout=timeout,
+        max_retries=max_retries,
+        max_backoff_seconds=max_backoff_seconds,
+        min_request_interval=min_request_interval,
+        sleep_seconds=sleep_seconds,
+        min_split_seconds=min_split_seconds,
+        rate_state=rate_state,
+        debug=debug,
+    )
 
-    page = 1
-    pages = 1
-    out: list[dict[str, Any]] = []
-
-    while page <= pages:
-        params = {
-            "q": query,
-            "from-date": year_start,
-            "to-date": year_end,
-            "order-by": "oldest",
-            "page-size": min(max(page_size, 1), 200),
-            "page": page,
-            "show-fields": "headline,trailText,bodyText,wordcount",
-            "show-tags": "keyword,contributor",
-            "api-key": api_key,
-        }
-        payload = request_with_retry(session, params, timeout, max_retries)
-        response = payload.get("response") or {}
-        pages = int(response.get("pages") or 1)
-        results = response.get("results") or []
-
-        for item in results:
-            out.append(normalize_article(ticker, query, year_start, year_end, item))
-
-        print(f"    page {page}/{pages} -> +{len(results)}")
-        page += 1
-        if sleep_seconds > 0:
-            time.sleep(sleep_seconds)
-
-    return out
-
-
-def dedupe_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    seen: set[tuple[str, str]] = set()
     deduped: list[dict[str, Any]] = []
-    for row in rows:
-        key = (row.get("ticker") or "", row.get("guardian_id") or "")
+    seen: set[str] = set()
+    for item in raw_articles:
+        if not isinstance(item, dict):
+            continue
+        key = f"{item.get('url', '')}|{item.get('seendate', '')}|{ticker}"
         if key in seen:
             continue
         seen.add(key)
-        deduped.append(row)
+        deduped.append(normalize_article(ticker=ticker, year=year, item=item))
+    debug_log(debug, f"{ticker} year={year} deduped {len(raw_articles)} -> {len(deduped)}")
     return deduped
+
+
+def write_year_file(
+    output_dir: Path,
+    year: int,
+    tickers: list[str],
+    records: list[dict[str, Any]],
+) -> Path:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    output_path = output_dir / f"guardian_news_{year}.json"
+    payload = {
+        "year": year,
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "source": "GDELT DOC API (ArtList)",
+        "tickers": tickers,
+        "article_count": len(records),
+        "articles": records,
+    }
+    output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    return output_path
 
 
 def main() -> None:
     args = parse_args()
+    if args.end_year < args.start_year:
+        raise ValueError("--end-year must be >= --start-year")
 
-    if not args.api_key:
-        raise ValueError(
-            "Guardian API key is required. Set GUARDIAN_API_KEY or pass --api-key."
-        )
-    if args.start_year > args.end_year:
-        raise ValueError("--start-year must be <= --end-year.")
-
-    tickers = load_tickers(args.tickers_file)
-    output_dir = Path(args.output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
+    tickers = load_tickers(args.tickers_file, max_tickers=max(args.max_tickers, 0))
+    output_dir = args.output_dir.resolve()
+    max_records = min(max(int(args.max_records), 1), 250)
+    rate_state = {"last_request_ts": 0.0}
 
     print(f"Loaded {len(tickers)} tickers from {args.tickers_file}")
-    print(f"Writing outputs to {output_dir.resolve()}")
+    print("Source: GDELT DOC API (no API key)")
+    print(f"Year range: {args.start_year} -> {args.end_year}")
+    print(f"Output directory: {output_dir}")
+    print(f"max_records/request={max_records}, min_request_interval={args.min_request_interval:.2f}s")
+    if args.debug:
+        print("Debug logging: ON")
 
-    with requests.Session() as session:
-        for year in range(args.start_year, args.end_year + 1):
-            print(f"\n===== Year {year} =====")
-            all_rows: list[dict[str, Any]] = []
-            for i, ticker in enumerate(tickers, start=1):
-                print(f"[{i:02d}/{len(tickers):02d}] {ticker}")
-                rows = fetch_ticker_year(
-                    session=session,
+    summary: list[dict[str, Any]] = []
+    for year in range(args.start_year, args.end_year + 1):
+        print(f"\n=== Year {year} ===", flush=True)
+        year_records: list[dict[str, Any]] = []
+        year_errors: list[dict[str, str]] = []
+        for idx, ticker in enumerate(tickers, start=1):
+            print(f"[{year}] {idx}/{len(tickers)} {ticker}: fetching...", flush=True)
+            try:
+                ticker_records = fetch_ticker_year_articles(
                     ticker=ticker,
                     year=year,
-                    api_key=args.api_key,
-                    page_size=args.page_size,
-                    timeout=args.request_timeout,
-                    max_retries=args.max_retries,
-                    sleep_seconds=args.sleep_seconds,
+                    query_template=args.query_template,
+                    max_records=max_records,
+                    timeout=float(args.request_timeout),
+                    max_retries=max(int(args.max_retries), 0),
+                    max_backoff_seconds=max(float(args.max_backoff_seconds), 1.0),
+                    min_request_interval=max(float(args.min_request_interval), 0.0),
+                    sleep_seconds=max(float(args.sleep_seconds), 0.0),
+                    min_split_seconds=max(int(args.min_split_seconds), 1),
+                    rate_state=rate_state,
+                    debug=bool(args.debug),
                 )
-                all_rows.extend(rows)
-                print(f"    total rows this ticker/year: {len(rows)}")
+                print(f"[{year}] {ticker}: {len(ticker_records)} articles", flush=True)
+                year_records.extend(ticker_records)
+            except Exception as exc:  # noqa: BLE001
+                print(f"[{year}] {ticker}: ERROR - {exc}", flush=True)
+                year_errors.append({"ticker": ticker, "error": str(exc)})
 
-            deduped = dedupe_rows(all_rows)
-            out_path = output_dir / f"guardian_news_{year}.json"
-            with out_path.open("w", encoding="utf-8") as f:
-                json.dump(deduped, f, ensure_ascii=False, indent=2)
-            print(
-                f"Saved {out_path.name}: {len(deduped)} rows "
-                f"(raw={len(all_rows)}, deduped={len(deduped)})"
-            )
+        out_path = write_year_file(output_dir=output_dir, year=year, tickers=tickers, records=year_records)
+        summary.append(
+            {
+                "year": year,
+                "articles": len(year_records),
+                "errors": len(year_errors),
+                "path": str(out_path),
+            }
+        )
+        print(f"[{year}] wrote {len(year_records)} records -> {out_path}", flush=True)
+        if year_errors:
+            print(f"[{year}] warnings: {len(year_errors)} tickers failed.", flush=True)
 
-    print("\nDone.")
+    summary_path = output_dir / "guardian_news_scrape_summary.json"
+    summary_payload = {
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "source": "GDELT DOC API (ArtList)",
+        "tickers_file": str(args.tickers_file),
+        "tickers_count": len(tickers),
+        "start_year": args.start_year,
+        "end_year": args.end_year,
+        "output_dir": str(output_dir),
+        "yearly_counts": summary,
+    }
+    summary_path.write_text(json.dumps(summary_payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"\nDone. Summary saved to {summary_path}")
 
 
 if __name__ == "__main__":

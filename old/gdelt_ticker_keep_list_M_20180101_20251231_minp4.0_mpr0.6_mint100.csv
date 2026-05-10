@@ -2,7 +2,6 @@ ticker,company_name,exchange,periods_total,total_articles,periods_active,periods
 AAPL,Apple Inc. - Common Stock,NASDAQ,96,254122.0,96,96,1.0,1.0,2647.104,2202.5,826.5,2647.104,2202.5,True
 AAL,American Airlines Group,Inc. - Common Stock,96,32215.0,96,96,1.0,1.0,335.573,196.5,79.25,335.573,196.5,True
 ABEO,Abeona Therapeutics Inc. - Common Stock,NASDAQ,96,1431.0,94,75,0.9792,0.7812,14.906,8.0,4.0,14.906,8.0,True
-ABNB,Airbnb,Inc. - Class A Common Stock,96,470145.0,96,96,1.0,1.0,4897.344,4859.5,2902.5,4897.344,4859.5,True
 ACAD,ACADIA Pharmaceuticals Inc. - Common Stock,NASDAQ,96,2984.0,96,91,1.0,0.9479,31.083,15.5,7.0,31.083,15.5,True
 ACGL,Arch Capital Group Ltd. - Common Stock,NASDAQ,96,2142.0,96,93,1.0,0.9688,22.312,17.0,11.75,22.312,17.0,True
 ACHC,Acadia Healthcare Company,Inc. - Common Stock,96,1532.0,95,79,0.9896,0.8229,15.958,7.5,4.75,15.958,7.5,True
@@ -10,14 +9,142 @@ ACHV,Achieve Life Sciences,Inc.  - Common Shares,96,1343.0,88,65,0.9167,0.6771,1
 ACIU,AC Immune SA - Common Stock,NASDAQ,96,879.0,88,63,0.9167,0.6562,9.156,5.5,2.0,9.156,5.5,True
 ACLS,Axcelis Technologies,Inc. - Common Stock,96,1576.0,95,87,0.9896,0.9062,16.417,14.0,9.0,16.417,14.0,True
 ACMR,ACM Research,Inc. - Class A Common Stock,96,2681.0,96,89,1.0,0.9271,27.927,13.0,9.0,27.927,13.0,True
-ACRS,Aclaris Therapeutics,Inc. - Common Stock,96,1667.0,95,82,0.9896,0.8542,17.365,8.0,5.0,17.365,8.0,True
 ADBE,Adobe Inc. - Common Stock,NASDAQ,96,15961.0,96,96,1.0,1.0,166.26,150.0,113.5,166.26,150.0,True
 ADI,Analog Devices,Inc. - Common Stock,96,26463.0,96,96,1.0,1.0,275.656,250.5,125.75,275.656,250.5,True
 ADIL,Adial Pharmaceuticals,Inc - Common Stock,96,1746.0,85,61,0.8854,0.6354,18.188,6.5,2.0,18.188,6.5,True
 ADMA,ADMA Biologics Inc - Common Stock,NASDAQ,96,1037.0,92,79,0.9583,0.8229,10.802,8.0,4.75,10.802,8.0,True
-ADP,Automatic Data Processing,Inc. - Common Stock,96,10298.0,96,96,1.0,1.0,107.271,85.5,64.75,107.271,85.5,True
 ADSK,Autodesk,Inc. - Common Stock,96,48246.0,96,96,1.0,1.0,502.562,441.0,247.0,502.562,441.0,True
 AEHR,Aehr Test Systems - Common Stock,NASDAQ,96,1217.0,92,70,0.9583,0.7292,12.677,9.0,3.0,12.677,9.0,True
 AEIS,Advanced Energy Industries,Inc. - Common Stock,96,1986.0,96,87,1.0,0.9062,20.688,15.5,8.0,20.688,15.5,True
-AEP,American Electric Power Company,Inc. - Common Stock,96,2867.0,96,96,1.0,1.0,29.865,23.5,14.75,29.865,23.5,True
-AERO,Grupo Aeromexico,S.A.B. de C.V. American Depositary Shares (each representing ten (10) Common Shares),96,1430.0,92,64,0.9583,0.6667,14.896,6.5,2.75,14.896,6.5,True
+AEMD,Aethlon Medical,Inc. - Common Stock,96,942.0,93,74,0.9688,0.7708,9.812,8.0,4.0,9.812,8.0,True
+AEO,American Eagle Outfitters,Inc. Common Stock,96,12026.0,96,96,1.0,1.0,125.271,94.0,54.0,125.271,94.0,True
+AEYE,AudioEye,Inc. - Common Stock,96,1008.0,92,69,0.9583,0.7188,10.5,7.5,3.0,10.5,7.5,True
+AFRM,Affirm Holdings,Inc. - Class A Common Stock,96,3495.0,63,62,0.6562,0.6458,36.406,20.0,0.0,36.406,20.0,True
+AGEN,Agenus Inc. - Common Stock,NASDAQ,96,1609.0,96,85,1.0,0.8854,16.76,12.5,6.75,16.76,12.5,True
+AGG,iShares Core U.S. Aggregate Bond ETF,P,96,2401.0,96,93,1.0,0.9688,25.01,14.0,8.75,25.01,14.0,True
+AGIO,Agios Pharmaceuticals,Inc. - Common Stock,96,2213.0,96,95,1.0,0.9896,23.052,17.0,9.0,23.052,17.0,True
+AGL,agilon health,inc. Common Stock,96,900.0,82,62,0.8542,0.6458,9.375,6.0,2.0,9.375,6.0,True
+AGNC,AGNC Investment Corp. - Common Stock,NASDAQ,96,1994.0,96,92,1.0,0.9583,20.771,17.5,11.0,20.771,17.5,True
+AGNT,eXp World Holdings,Inc. - Common Stock,96,1689.0,96,92,1.0,0.9583,17.594,14.5,9.0,17.594,14.5,True
+AGX,Argan,Inc. Common Stock,96,15698.0,96,96,1.0,1.0,163.521,151.0,113.5,163.521,151.0,True
+AGYS,Agilysys,Inc. - Common Stock,96,1854.0,96,96,1.0,1.0,19.312,16.0,10.0,19.312,16.0,True
+AI,C3.ai,Inc. Class A Common Stock,96,5254.0,91,86,0.9479,0.8958,54.729,40.0,20.75,54.729,40.0,True
+AIG,American International Group,Inc. New Common Stock,96,26561.0,96,96,1.0,1.0,276.677,149.5,90.0,276.677,149.5,True
+AIOT,PowerFleet,Inc. - Common Stock,96,772.0,89,63,0.9271,0.6562,8.042,5.0,2.0,8.042,5.0,True
+AIP,Arteris,Inc.  - Common Stock,96,544.0,93,66,0.9688,0.6875,5.667,5.0,2.0,5.667,5.0,True
+AIQ,Global X Artificial Intelligence & Technology ETF,NASDAQ,96,786.0,93,69,0.9688,0.7188,8.188,6.0,3.0,8.188,6.0,True
+AIRG,Airgain,Inc. - Common Stock,96,1195.0,94,78,0.9792,0.8125,12.448,10.0,4.0,12.448,10.0,True
+AIRT,Air T,Inc. - Common Stock,96,7112.0,96,96,1.0,1.0,74.083,53.0,32.5,74.083,53.0,True
+AIT,Applied Industrial Technologies,Inc. Common Stock,96,1224.0,96,86,1.0,0.8958,12.75,10.0,6.0,12.75,10.0,True
+AIZ,Assurant,Inc. Common Stock,96,5104.0,96,96,1.0,1.0,53.167,43.5,22.75,53.167,43.5,True
+AKAM,Akamai Technologies,Inc. - Common Stock,96,9711.0,96,96,1.0,1.0,101.156,94.0,36.0,101.156,94.0,True
+AKBA,Akebia Therapeutics,Inc. - Common Stock,96,2105.0,96,90,1.0,0.9375,21.927,17.0,7.0,21.927,17.0,True
+ALCO,Alico,Inc. - Common Stock,96,3065.0,96,94,1.0,0.9792,31.927,26.5,16.0,31.927,26.5,True
+ALEC,Alector,Inc. - Common Stock,96,1300.0,93,78,0.9688,0.8125,13.542,8.5,4.75,13.542,8.5,True
+ALGM,Allegro MicroSystems,Inc. - Common Stock,96,2127.0,96,95,1.0,0.9896,22.156,19.0,12.0,22.156,19.0,True
+ALGN,Align Technology,Inc. - Common Stock,96,10778.0,96,96,1.0,1.0,112.271,74.5,56.0,112.271,74.5,True
+ALGT,Allegiant Travel Company - Common Stock,NASDAQ,96,2291.0,96,93,1.0,0.9688,23.865,15.0,10.75,23.865,15.0,True
+ALHC,Alignment Healthcare,Inc. - Common Stock,96,967.0,94,79,0.9792,0.8229,10.073,8.0,5.0,10.073,8.0,True
+ALIT,Alight,Inc. Class A Common Stock,96,219326.0,96,96,1.0,1.0,2284.646,1896.0,1373.0,2284.646,1896.0,True
+ALK,Alaska Air Group,Inc. Common Stock,96,17121.0,96,96,1.0,1.0,178.344,106.0,53.0,178.344,106.0,True
+ALKT,Alkami Technology,Inc. - Common Stock,96,638.0,78,58,0.8125,0.6042,6.646,5.0,1.0,6.646,5.0,True
+ALLO,Allogene Therapeutics,Inc. - Common Stock,96,2368.0,93,85,0.9688,0.8854,24.667,13.0,7.0,24.667,13.0,True
+ALLT,Allot Ltd. - Ordinary Shares,NASDAQ,96,985.0,95,81,0.9896,0.8438,10.26,8.0,5.0,10.26,8.0,True
+ALNY,Alnylam Pharmaceuticals,Inc. - Common Stock,96,6996.0,96,96,1.0,1.0,72.875,54.0,34.75,72.875,54.0,True
+ALOT,AstroNova,Inc. - Common Stock,96,913.0,92,72,0.9583,0.75,9.51,7.0,3.75,9.51,7.0,True
+ALRM,Alarm.com Holdings,Inc. - Common Stock,96,965.0,92,73,0.9583,0.7604,10.052,6.5,4.0,10.052,6.5,True
+ALSN,Allison Transmission Holdings,Inc. Common Stock,96,1472.0,96,76,1.0,0.7917,15.333,9.0,5.0,15.333,9.0,True
+ALT,Altimmune,Inc. - Common Stock,96,2165.0,96,93,1.0,0.9688,22.552,14.0,9.0,22.552,14.0,True
+ALV,Autoliv,Inc. Common Stock,96,9803.0,96,95,1.0,0.9896,102.115,61.5,36.75,102.115,61.5,True
+ALVO,Alvotech - Ordinary Shares,NASDAQ,96,1398.0,91,78,0.9479,0.8125,14.562,11.0,5.0,14.562,11.0,True
+ALX,Alexander's,Inc. Common Stock,96,3727.0,96,96,1.0,1.0,38.823,30.0,20.0,38.823,30.0,True
+AMAT,Applied Materials,Inc. - Common Stock,96,34962.0,96,96,1.0,1.0,364.188,317.5,241.25,364.188,317.5,True
+AMBA,Ambarella,Inc. - Ordinary Shares,96,4704.0,96,95,1.0,0.9896,49.0,32.5,19.75,49.0,32.5,True
+AMC,AMC Entertainment Holdings,Inc. Class A Common Stock,96,14396.0,96,96,1.0,1.0,149.958,74.0,34.75,149.958,74.0,True
+AMD,Advanced Micro Devices,Inc. - Common Stock,96,63425.0,96,96,1.0,1.0,660.677,600.5,406.75,660.677,600.5,True
+AME,AMETEK,Inc.,96,13225.0,96,96,1.0,1.0,137.76,116.5,38.75,137.76,116.5,True
+AMG,Affiliated Managers Group,Inc. Common Stock,96,1719.0,96,87,1.0,0.9062,17.906,10.5,6.0,17.906,10.5,True
+AMGN,Amgen Inc. - Common Stock,NASDAQ,96,23869.0,96,96,1.0,1.0,248.635,201.5,138.0,248.635,201.5,True
+AMKR,Amkor Technology,Inc. - Common Stock,96,3228.0,96,95,1.0,0.9896,33.625,28.0,18.0,33.625,28.0,True
+AMLP,Alerian MLP ETF,P,96,1230.0,95,87,0.9896,0.9062,12.812,11.0,6.0,12.812,11.0,True
+AMN,AMN Healthcare Services Inc,N,96,1256.0,94,69,0.9792,0.7188,13.083,7.0,3.0,13.083,7.0,True
+AMP,Ameriprise Financial,Inc. Common Stock,96,24472.0,96,96,1.0,1.0,254.917,184.5,114.75,254.917,184.5,True
+AMPH,Amphastar Pharmaceuticals,Inc. - Common Stock,96,1881.0,95,86,0.9896,0.8958,19.594,16.0,6.75,19.594,16.0,True
+AMPL,Amplitude,Inc. - Class A Common Stock,96,37866.0,96,96,1.0,1.0,394.438,401.0,222.75,394.438,401.0,True
+AMRC,Ameresco,Inc. Class A Common Stock,96,5064.0,96,95,1.0,0.9896,52.75,48.5,23.75,52.75,48.5,True
+AMRX,Amneal Pharmaceuticals,Inc. - Class A Common Stock,96,4670.0,96,96,1.0,1.0,48.646,31.0,19.75,48.646,31.0,True
+AMSC,American Superconductor Corporation - Common Stock,NASDAQ,96,785.0,87,62,0.9062,0.6458,8.177,5.0,2.75,8.177,5.0,True
+AMSF,AMERISAFE,Inc. - Common Stock,96,1309.0,85,58,0.8854,0.6042,13.635,5.0,2.0,13.635,5.0,True
+AMTX,Aemetis,Inc - Common Stock,96,4230.0,96,93,1.0,0.9688,44.062,27.5,12.0,44.062,27.5,True
+AMX,America Movil,S.A.B. de C.V. American Depositary Shares (each representing the right to receive twenty (20) Series B Shares,96,5130.0,96,90,1.0,0.9375,53.438,39.5,10.0,53.438,39.5,True
+AMZN,Amazon.com,Inc. - Common Stock,96,587835.0,96,96,1.0,1.0,6123.281,6414.5,1954.0,6123.281,6414.5,True
+AN,AutoNation,Inc. Common Stock,96,13054.0,96,96,1.0,1.0,135.979,81.5,41.25,135.979,81.5,True
+ANAB,AnaptysBio,Inc. - Common Stock,96,1546.0,95,82,0.9896,0.8542,16.104,9.0,4.0,16.104,9.0,True
+ANDE,The Andersons,Inc. - Common Stock,96,10186.0,96,96,1.0,1.0,106.104,73.5,39.75,106.104,73.5,True
+ANET,Arista Networks,Inc. Common Stock,96,10477.0,96,96,1.0,1.0,109.135,99.5,74.75,109.135,99.5,True
+ANGX,Angel Studios,Inc. Class A Common Stock,96,3762.0,92,72,0.9583,0.75,39.188,11.5,3.75,39.188,11.5,True
+ANIK,Anika Therapeutics Inc. - Common Stock,NASDAQ,96,1900.0,92,83,0.9583,0.8646,19.792,15.0,6.0,19.792,15.0,True
+ANIX,Anixa Biosciences,Inc. - Common Stock,96,614.0,85,60,0.8854,0.625,6.396,4.0,2.75,6.396,4.0,True
+AOUT,American Outdoor Brands,Inc. - Common Stock,96,7957.0,86,72,0.8958,0.75,82.885,13.0,3.75,82.885,13.0,True
+APA,APA Corporation - Common Stock,NASDAQ,96,1310.0,80,61,0.8333,0.6354,13.646,9.5,1.75,13.646,9.5,True
+APD,Air Products and Chemicals,Inc. Common Stock,96,9561.0,96,96,1.0,1.0,99.594,82.0,60.0,99.594,82.0,True
+APEI,American Public Education,Inc. - Common Stock,96,3618.0,96,96,1.0,1.0,37.688,27.5,18.0,37.688,27.5,True
+API,Agora,Inc. - ADS,96,32439.0,96,96,1.0,1.0,337.906,308.0,219.75,337.906,308.0,True
+APLE,Apple Hospitality REIT,Inc. Common Shares,96,1536.0,95,88,0.9896,0.9167,16.0,10.0,6.0,16.0,10.0,True
+APLS,Apellis Pharmaceuticals,Inc. - Common Stock,96,2097.0,96,95,1.0,0.9896,21.844,17.0,11.0,21.844,17.0,True
+APO,Apollo Global Management,Inc. (New) Common Stock,96,37133.0,96,96,1.0,1.0,386.802,334.5,240.25,386.802,334.5,True
+APPF,AppFolio,Inc. - Class A Common Stock,96,2181.0,96,95,1.0,0.9896,22.719,21.5,11.75,22.719,21.5,True
+APPN,Appian Corporation - Class A Common Stock,NASDAQ,96,1099.0,94,80,0.9792,0.8333,11.448,9.0,5.0,11.448,9.0,True
+APPS,Digital Turbine,Inc. - Common Stock,96,2781.0,95,87,0.9896,0.9062,28.969,20.0,9.75,28.969,20.0,True
+APT,Alpha Pro Tech,Ltd. Common Stock,96,1703.0,91,76,0.9479,0.7917,17.74,11.5,4.0,17.74,11.5,True
+APVO,Aptevo Therapeutics Inc. - Common Stock,NASDAQ,96,1724.0,91,80,0.9479,0.8333,17.958,13.0,6.0,17.958,13.0,True
+AQB,AquaBounty Technologies,Inc. - Common Stock,96,1365.0,94,67,0.9792,0.6979,14.219,6.0,3.0,14.219,6.0,True
+AQMS,Aqua Metals,Inc. - Common Stock,96,980.0,91,64,0.9479,0.6667,10.208,6.0,2.0,10.208,6.0,True
+AQST,Aquestive Therapeutics,Inc. - Common Stock,96,1494.0,94,72,0.9792,0.75,15.562,8.5,3.75,15.562,8.5,True
+ARDT,Ardent Health,Inc. Common Stock,96,1421.0,96,83,1.0,0.8646,14.802,10.0,6.0,14.802,10.0,True
+ARDX,Ardelyx,Inc. - Common Stock,96,1992.0,96,90,1.0,0.9375,20.75,15.0,10.0,20.75,15.0,True
+ARE,Alexandria Real Estate Equities,Inc. Common Stock,96,3447.0,96,96,1.0,1.0,35.906,32.5,21.0,35.906,32.5,True
+ARHS,Arhaus,Inc. - Class A Common Stock,96,1696.0,96,94,1.0,0.9792,17.667,15.0,10.0,17.667,15.0,True
+ARI,Apollo Commercial Real Estate Finance,Inc,96,959.0,91,76,0.9479,0.7917,9.99,7.0,4.0,9.99,7.0,True
+ARKK,ARK Innovation ETF,Z,96,7423.0,96,94,1.0,0.9792,77.323,41.0,16.5,77.323,41.0,True
+ARKW,ARK Next Generation Internet ETF,Z,96,1206.0,72,58,0.75,0.6042,12.562,7.0,1.5,12.562,7.0,True
+ARLO,Arlo Technologies,Inc. Common Stock,96,1998.0,93,83,0.9688,0.8646,20.812,11.0,6.0,20.812,11.0,True
+ARLP,Alliance Resource Partners,L.P. - Common Units Representing Limited Partnership Interests,96,3728.0,94,86,0.9792,0.8958,38.833,16.0,7.0,38.833,16.0,True
+AROC,Archrock,Inc. Common Stock,96,1403.0,93,77,0.9688,0.8021,14.615,8.0,4.75,14.615,8.0,True
+ARQT,Arcutis Biotherapeutics,Inc. - Common stock,96,1080.0,74,68,0.7708,0.7083,11.25,9.0,2.75,11.25,9.0,True
+ARRY,Array Technologies,Inc. - Common Stock,96,5754.0,96,96,1.0,1.0,59.938,58.5,37.0,59.938,58.5,True
+ARW,Arrow Electronics,Inc. Common Stock,96,5328.0,96,96,1.0,1.0,55.5,38.5,24.75,55.5,38.5,True
+AS,Amer Sports,Inc. Ordinary Shares,96,3015.0,96,93,1.0,0.9688,31.406,23.5,10.75,31.406,23.5,True
+ASAN,Asana,Inc. Class A Common Stock,96,20627.0,96,96,1.0,1.0,214.865,209.0,125.5,214.865,209.0,True
+ASMB,Assembly Biosciences,Inc. - Common Stock,96,1140.0,93,68,0.9688,0.7083,11.875,7.0,3.0,11.875,7.0,True
+ASPN,Aspen Aerogels,Inc. Common Stock,96,1922.0,95,91,0.9896,0.9479,20.021,19.0,10.75,20.021,19.0,True
+ASR,Grupo Aeroportuario del Sureste,S.A. de C.V. Common Stock,96,852.0,91,66,0.9479,0.6875,8.875,5.5,3.0,8.875,5.5,True
+ASTE,Astec Industries,Inc. - Common Stock,96,2146.0,96,86,1.0,0.8958,22.354,12.5,6.0,22.354,12.5,True
+ASTI,Ascent Solar Technologies,Inc - Common Stock,96,618.0,92,59,0.9583,0.6146,6.438,5.0,2.75,6.438,5.0,True
+ASTS,AST SpaceMobile,Inc. - Class A Common Stock,96,3088.0,64,61,0.6667,0.6354,32.167,20.0,0.0,32.167,20.0,True
+ASX,ASE Technology Holding Co.,Ltd. American Depositary Shares (each representing Two Common Shares),96,1751.0,90,90,0.9375,0.9375,18.24,18.0,12.0,18.24,18.0,True
+ASYS,Amtech Systems,Inc. - Common Stock,96,580.0,87,58,0.9062,0.6042,6.042,4.0,2.0,6.042,4.0,True
+ATEN,A10 Networks,Inc. Common Stock,96,2755.0,95,84,0.9896,0.875,28.698,19.0,10.0,28.698,19.0,True
+ATER,Aterian,Inc. - Common Stock,96,986.0,93,72,0.9688,0.75,10.271,6.0,3.75,10.271,6.0,True
+ATNI,ATN International,Inc. - Common Stock,96,1089.0,93,79,0.9688,0.8229,11.344,8.5,5.0,11.344,8.5,True
+ATNM,Actinium Pharmaceuticals,Inc. (Delaware) Common Stock,96,1249.0,89,78,0.9271,0.8125,13.01,8.5,4.0,13.01,8.5,True
+ATR,AptarGroup,Inc. Common Stock,96,3588.0,96,95,1.0,0.9896,37.375,31.5,16.75,37.375,31.5,True
+ATRA,Atara Biotherapeutics,Inc. - Common Stock,96,2280.0,96,89,1.0,0.9271,23.75,16.5,8.75,23.75,16.5,True
+ATRO,Astronics Corporation - Common Stock,NASDAQ,96,1791.0,95,81,0.9896,0.8438,18.656,13.0,5.0,18.656,13.0,True
+AUDC,AudioCodes Ltd. - Ordinary Shares,NASDAQ,96,784.0,84,59,0.875,0.6146,8.167,5.0,2.0,8.167,5.0,True
+AUR,Aurora Innovation,Inc.  - Class A Common Stock,96,3544.0,96,94,1.0,0.9792,36.917,20.5,11.75,36.917,20.5,True
+AVAV,AeroVironment,Inc. - Common Stock,96,11388.0,96,96,1.0,1.0,118.625,113.0,67.75,118.625,113.0,True
+AVGO,Broadcom Inc. - Common Stock,NASDAQ,96,18462.0,96,96,1.0,1.0,192.312,174.0,135.75,192.312,174.0,True
+AVNS,Avanos Medical,Inc. Common Stock,96,1434.0,91,79,0.9479,0.8229,14.938,13.0,5.0,14.938,13.0,True
+AVNW,Aviat Networks,Inc. - Common Stock,96,1354.0,93,80,0.9688,0.8333,14.104,13.5,6.0,14.104,13.5,True
+AVO,Mission Produce,Inc. - Common Stock,96,6836.0,96,96,1.0,1.0,71.208,49.0,30.75,71.208,49.0,True
+AVPT,AvePoint,Inc. - Class A Common Stock,96,1149.0,96,91,1.0,0.9479,11.969,10.0,6.75,11.969,10.0,True
+AVT,Avnet,Inc. - Common Stock,96,6089.0,96,96,1.0,1.0,63.427,48.5,27.0,63.427,48.5,True
+AWK,American Water Works Company,Inc. Common Stock,96,1973.0,96,92,1.0,0.9583,20.552,14.5,8.0,20.552,14.5,True
+AXGN,Axogen,Inc. - Common Stock,96,1990.0,95,79,0.9896,0.8229,20.729,10.5,5.0,20.729,10.5,True
+AXON,Axon Enterprise,Inc. - Common Stock,96,6246.0,96,96,1.0,1.0,65.062,56.0,36.75,65.062,56.0,True
+AXS,Axis Capital Holdings Limited Common Stock,N,96,1255.0,95,89,0.9896,0.9271,13.073,10.5,5.75,13.073,10.5,True
+AXSM,Axsome Therapeutics,Inc. - Common Stock,96,2376.0,95,95,0.9896,0.9896,24.75,17.5,12.0,24.75,17.5,True
+AXTI,AXT Inc - Common Stock,NASDAQ,96,977.0,88,65,0.9167,0.6771,10.177,5.5,2.0,10.177,5.5,True
+AZO,AutoZone,Inc. Common Stock,96,24428.0,96,96,1.0,1.0,254.458,165.5,115.0,254.458,165.5,True
+AZZ,AZZ Inc.,N,96,1840.0,95,82,0.9896,0.8542,19.167,8.5,5.75,19.167,8.5,True
