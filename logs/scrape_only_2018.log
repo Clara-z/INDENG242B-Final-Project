@@ -410,3 +410,29 @@
 2026-05-10 16:31:24,865 | INFO | Ticker AAPL reached max_windows_per_ticker=1. Stop further windows.
 2026-05-10 16:31:24,866 | INFO | Ticker AAPL done. months_processed=1 kept_articles=0
 2026-05-10 16:31:25,641 | WARNING | No GDELT metadata collected for year=2018. Wrote empty metadata files.
+2026-05-10 16:36:17,543 | INFO | Ticker filter loaded from data/one_ticker_aapl.txt: requested=1, selected=1, missing_in_config=0
+2026-05-10 16:36:17,543 | INFO | Starting scraping-only pipeline year=2018
+2026-05-10 16:36:17,543 | INFO | Config=RuntimeConfig(year=2018, output_dir='/Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test', log_dir='logs', universe_path='data/universe.json', tickers_file='data/one_ticker_aapl.txt', overwrite=True, max_articles_per_month=30, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=1, gdelt_maxrecords=250, gdelt_timeout=15, gdelt_retries=3, gdelt_sleep=0.05, min_request_interval=8.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, gdelt_domain_filter='theguardian.com', article_timeout=8, article_retries=1, article_workers=8, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, guardian_api_key='test', guardian_timeout=10, guardian_retries=1, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 16:36:17,543 | INFO | Companies selected=1
+2026-05-10 16:36:17,543 | INFO | Ticker source file=data/one_ticker_aapl.txt
+2026-05-10 16:36:17,543 | INFO | Window days=30
+2026-05-10 16:36:17,543 | INFO | Max windows per ticker=1
+2026-05-10 16:36:17,543 | INFO | Effective min_request_interval=8.0 seconds
+2026-05-10 16:36:23,893 | WARNING | GDELT status=429. Sleeping 8.7s then retry/skip. query="Apple Inc." sourcelang:english domainis:theguardian.com
+2026-05-10 16:36:47,013 | INFO | Ticker AAPL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 16:36:47,014 | INFO | Ticker AAPL done. months_processed=1 kept_articles=0
+2026-05-10 16:36:47,133 | WARNING | No GDELT metadata collected for year=2018. Wrote empty metadata files.
+2026-05-10 16:37:59,927 | INFO | Ticker filter loaded from /Users/qiang/Desktop/INDENG242B-Final-Project/data/one_ticker_aapl.txt: requested=1, selected=1, missing_in_config=0
+2026-05-10 16:37:59,927 | INFO | Starting scraping-only pipeline year=2018
+2026-05-10 16:37:59,927 | INFO | Config=RuntimeConfig(year=2018, output_dir='/Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test', log_dir='logs', universe_path='data/universe.json', tickers_file='/Users/qiang/Desktop/INDENG242B-Final-Project/data/one_ticker_aapl.txt', overwrite=True, max_articles_per_month=30, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=1, gdelt_maxrecords=250, gdelt_timeout=15, gdelt_retries=3, gdelt_sleep=0.05, min_request_interval=8.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, gdelt_domain_filter='', article_timeout=8, article_retries=1, article_workers=8, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, guardian_api_key='test', guardian_timeout=10, guardian_retries=1, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 16:37:59,927 | INFO | Companies selected=1
+2026-05-10 16:37:59,927 | INFO | Ticker source file=/Users/qiang/Desktop/INDENG242B-Final-Project/data/one_ticker_aapl.txt
+2026-05-10 16:37:59,927 | INFO | Window days=30
+2026-05-10 16:37:59,928 | INFO | Max windows per ticker=1
+2026-05-10 16:37:59,928 | INFO | Effective min_request_interval=8.0 seconds
+2026-05-10 16:38:05,495 | INFO | Ticker AAPL reached max_windows_per_ticker=1. Stop further windows.
+2026-05-10 16:38:05,495 | INFO | Ticker AAPL done. months_processed=1 kept_articles=30
+2026-05-10 16:38:05,548 | INFO | Saved metadata: /Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test/news_metadata_2018.parquet rows=30
+2026-05-10 16:39:27,984 | INFO | Saved full-text articles: /Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test/news_articles_fulltext_2018.parquet rows=7
+2026-05-10 16:39:27,985 | INFO | Saved failed fetch log: /Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test/news_article_fetch_failed_2018.parquet rows=23
+2026-05-10 16:39:28,003 | INFO | Saved sample-style JSON: /Users/qiang/Desktop/INDENG242B-Final-Project/tmp_schema_test/sample_guardian_news_2018.json rows=30

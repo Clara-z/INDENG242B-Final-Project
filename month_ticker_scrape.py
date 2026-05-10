@@ -64,7 +64,7 @@ class RuntimeConfig:
     sort: str = "hybridrel"
     gdelt_backoff_base: float = 2.0
     gdelt_max_backoff: float = 90.0
-    gdelt_domain_filter: str = "theguardian.com"
+    gdelt_domain_filter: str = ""
 
     # Article fetching
     article_timeout: int = 5
@@ -1041,7 +1041,7 @@ def main() -> None:
 
     parser.add_argument("--gdelt_maxrecords", type=int, default=80)
     parser.add_argument("--gdelt_timeout", type=int, default=15)
-    parser.add_argument("--gdelt_retries", type=int, default=1)
+    parser.add_argument("--gdelt_retries", type=int, default=3)
     parser.add_argument("--gdelt_sleep", type=float, default=0.05)
     parser.add_argument("--min_request_interval", type=float, default=7.0)
     parser.add_argument("--gdelt_backoff_base", type=float, default=2.0)
@@ -1049,7 +1049,7 @@ def main() -> None:
     parser.add_argument(
         "--gdelt_domain_filter",
         type=str,
-        default="theguardian.com",
+        default="",
         help="Restrict GDELT article source domain (empty string disables).",
     )
     parser.add_argument("--sort", type=str, default="hybridrel", choices=["hybridrel", "datedesc", "dateasc"])
