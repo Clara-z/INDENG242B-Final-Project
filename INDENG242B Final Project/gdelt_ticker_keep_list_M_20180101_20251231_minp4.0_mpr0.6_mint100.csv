@@ -1,9 +1,0 @@
-ticker,company_name,exchange,periods_total,total_articles,periods_active,periods_pass,active_ratio,pass_ratio,avg_articles_per_period,median_articles_per_period,p25_articles_per_period,avg_articles_per_month,median_articles_per_month,keep
-AAPL,Apple Inc. - Common Stock,NASDAQ,96,254122.0,96,96,1.0,1.0,2647.104,2202.5,826.5,2647.104,2202.5,True
-AAL,American Airlines Group,Inc. - Common Stock,96,32215.0,96,96,1.0,1.0,335.573,196.5,79.25,335.573,196.5,True
-ABEO,Abeona Therapeutics Inc. - Common Stock,NASDAQ,96,1431.0,94,75,0.9792,0.7812,14.906,8.0,4.0,14.906,8.0,True
-ABNB,Airbnb,Inc. - Class A Common Stock,96,470145.0,96,96,1.0,1.0,4897.344,4859.5,2902.5,4897.344,4859.5,True
-ACAD,ACADIA Pharmaceuticals Inc. - Common Stock,NASDAQ,96,2984.0,96,91,1.0,0.9479,31.083,15.5,7.0,31.083,15.5,True
-ACGL,Arch Capital Group Ltd. - Common Stock,NASDAQ,96,2142.0,96,93,1.0,0.9688,22.312,17.0,11.75,22.312,17.0,True
-ACHC,Acadia Healthcare Company,Inc. - Common Stock,96,1532.0,95,79,0.9896,0.8229,15.958,7.5,4.75,15.958,7.5,True
-ACHV,Achieve Life Sciences,Inc.  - Common Shares,96,1343.0,88,65,0.9167,0.6771,13.99,7.0,3.0,13.99,7.0,True

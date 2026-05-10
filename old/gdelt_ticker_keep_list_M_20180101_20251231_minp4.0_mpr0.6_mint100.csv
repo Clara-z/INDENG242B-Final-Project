@@ -1,0 +1,23 @@
+ticker,company_name,exchange,periods_total,total_articles,periods_active,periods_pass,active_ratio,pass_ratio,avg_articles_per_period,median_articles_per_period,p25_articles_per_period,avg_articles_per_month,median_articles_per_month,keep
+AAPL,Apple Inc. - Common Stock,NASDAQ,96,254122.0,96,96,1.0,1.0,2647.104,2202.5,826.5,2647.104,2202.5,True
+AAL,American Airlines Group,Inc. - Common Stock,96,32215.0,96,96,1.0,1.0,335.573,196.5,79.25,335.573,196.5,True
+ABEO,Abeona Therapeutics Inc. - Common Stock,NASDAQ,96,1431.0,94,75,0.9792,0.7812,14.906,8.0,4.0,14.906,8.0,True
+ABNB,Airbnb,Inc. - Class A Common Stock,96,470145.0,96,96,1.0,1.0,4897.344,4859.5,2902.5,4897.344,4859.5,True
+ACAD,ACADIA Pharmaceuticals Inc. - Common Stock,NASDAQ,96,2984.0,96,91,1.0,0.9479,31.083,15.5,7.0,31.083,15.5,True
+ACGL,Arch Capital Group Ltd. - Common Stock,NASDAQ,96,2142.0,96,93,1.0,0.9688,22.312,17.0,11.75,22.312,17.0,True
+ACHC,Acadia Healthcare Company,Inc. - Common Stock,96,1532.0,95,79,0.9896,0.8229,15.958,7.5,4.75,15.958,7.5,True
+ACHV,Achieve Life Sciences,Inc.  - Common Shares,96,1343.0,88,65,0.9167,0.6771,13.99,7.0,3.0,13.99,7.0,True
+ACIU,AC Immune SA - Common Stock,NASDAQ,96,879.0,88,63,0.9167,0.6562,9.156,5.5,2.0,9.156,5.5,True
+ACLS,Axcelis Technologies,Inc. - Common Stock,96,1576.0,95,87,0.9896,0.9062,16.417,14.0,9.0,16.417,14.0,True
+ACMR,ACM Research,Inc. - Class A Common Stock,96,2681.0,96,89,1.0,0.9271,27.927,13.0,9.0,27.927,13.0,True
+ACRS,Aclaris Therapeutics,Inc. - Common Stock,96,1667.0,95,82,0.9896,0.8542,17.365,8.0,5.0,17.365,8.0,True
+ADBE,Adobe Inc. - Common Stock,NASDAQ,96,15961.0,96,96,1.0,1.0,166.26,150.0,113.5,166.26,150.0,True
+ADI,Analog Devices,Inc. - Common Stock,96,26463.0,96,96,1.0,1.0,275.656,250.5,125.75,275.656,250.5,True
+ADIL,Adial Pharmaceuticals,Inc - Common Stock,96,1746.0,85,61,0.8854,0.6354,18.188,6.5,2.0,18.188,6.5,True
+ADMA,ADMA Biologics Inc - Common Stock,NASDAQ,96,1037.0,92,79,0.9583,0.8229,10.802,8.0,4.75,10.802,8.0,True
+ADP,Automatic Data Processing,Inc. - Common Stock,96,10298.0,96,96,1.0,1.0,107.271,85.5,64.75,107.271,85.5,True
+ADSK,Autodesk,Inc. - Common Stock,96,48246.0,96,96,1.0,1.0,502.562,441.0,247.0,502.562,441.0,True
+AEHR,Aehr Test Systems - Common Stock,NASDAQ,96,1217.0,92,70,0.9583,0.7292,12.677,9.0,3.0,12.677,9.0,True
+AEIS,Advanced Energy Industries,Inc. - Common Stock,96,1986.0,96,87,1.0,0.9062,20.688,15.5,8.0,20.688,15.5,True
+AEP,American Electric Power Company,Inc. - Common Stock,96,2867.0,96,96,1.0,1.0,29.865,23.5,14.75,29.865,23.5,True
+AERO,Grupo Aeromexico,S.A.B. de C.V. American Depositary Shares (each representing ten (10) Common Shares),96,1430.0,92,64,0.9583,0.6667,14.896,6.5,2.75,14.896,6.5,True
