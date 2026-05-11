@@ -263,29 +263,33 @@ reward = log(1 + portfolio_return) - κ * turnover - λ * ICVaR
 ### 4.1 Algorithm
 
 **Library:** Stable-Baselines3 PPO  
-**Policy:** `MlpPolicy` (standard feedforward MLP on the flat observation vector)
+**Default policy:** `PortfolioTransformerPolicy` (custom cross-asset Transformer + Dirichlet simplex distribution)
+**Fallback policy:** `--policy mlp` keeps the previous SB3 `MlpPolicy` path for legacy comparisons.
 
-### 4.1.1 Aspirational design vs current implementation
+### 4.1.1 Implemented custom policy
 
-An earlier design document described a **custom Actor–Critic**: per-asset encoder, **cross-asset Transformer**, **Dirichlet** action distribution over weights, and a **Dict** observation (`assets` matrix + `global_portfolio` + `market`). That matches the *research* framing (permutation-equivariant policy, explicit cross-sectional attention, structured news projection).
+The repository now implements the earlier custom Actor-Critic idea in `rl/train_portfolio_rl.py` while preserving the current flat `Box` environment API. The policy reconstructs the flat vector into `(batch, 30, feature_count + previous_weight)`, splits scalar/news/market/previous-weight fields from `feature_cols`, applies a shared per-asset encoder, runs cross-asset Transformer attention, and emits a Dirichlet distribution over long-only portfolio weights.
 
-**What we run today:** a single **flattened observation** and **SB3 `MlpPolicy`**. That is **simpler, faster to train, and easier to debug**, but it **does not** encode permutation equivariance or cross-asset attention explicitly—the MLP must learn approximate structure from the ordered 30×74 block.
+The implementation adapts the old architecture to the actual data contract:
+- Observation remains a flat `Box` of size 2,223 for compatibility with the existing `PortfolioEnv`, `VecMonitor`, and run outputs.
+- News input uses the current PCA/sentiment columns (`news_pca_*`, `sentiment_*`, `n_articles`, `mean_tone`) rather than raw 768-dimensional FinBERT embeddings.
+- Market-wide columns are extracted from the first asset row and concatenated with the 3 portfolio globals.
+- The Dirichlet actor uses `mean = softmax(asset_logits)` and `alpha = mean * concentration + 1e-3`; deterministic evaluation uses the Dirichlet mean. Initial concentration scales with the asset count (`max(10, 2 * n_assets)`) so the 30-name policy starts dense rather than boundary-heavy.
 
 | Aspect | Older / aspirational spec | Current repo |
 |--------|---------------------------|--------------|
-| Observation | Dict: `(30, 805)` per asset + globals + market | Single `Box` of size 2,223 |
+| Observation | Dict: `(30, 805)` per asset + globals + market | Single `Box` of size 2,223, reshaped inside the policy |
 | News in state | 768-dim FinBERT + `has_news` | 32 PCA + sentiment + `has_news` (inside the 73) |
-| Policy | Custom Transformer + Dirichlet | SB3 `MlpPolicy` (Gaussian-ish Box policy) |
-| Which is “better”? | **Potentially stronger** for 30-name portfolios if implemented and tuned well | **Better for iteration and delivery** now; use aspirational design if you need inductive bias and report-grade novelty |
-
-**Recommendation:** keep the **current MLP pipeline** for baselines and ablations; **upgrade to the custom policy** only when you have budget to implement, test (`test_perm_equivariance.py` style), and compare fairly on the same data splits.
+| Policy | Custom Transformer + Dirichlet | `PortfolioTransformerPolicy` by default; `--policy mlp` for legacy runs |
+| Equivariance | Required actor equivariance and critic invariance | Covered by `tests/test_portfolio_transformer_policy.py` |
 
 ### 4.2 Hyperparameters
 
 ```python
 PPO(
-    "MlpPolicy",
+    PortfolioTransformerPolicy,
     env,
+    policy_kwargs={"feature_cols": train.feature_cols},
     learning_rate=3e-4,
     n_steps=2048,
     batch_size=256,
@@ -296,6 +300,7 @@ PPO(
     ent_coef=0.01,
     vf_coef=0.5,
     max_grad_norm=0.5,
+    target_kl=0.02,
     seed=42,
 )
 ```
@@ -497,7 +502,7 @@ python rl/train_portfolio_rl.py --total-timesteps 5000000  # Train
 
 1. **Survivorship bias:** Universe is fixed; no handling of delistings or index changes
 2. **No high/low prices:** `high_low_range_5d` is set to 0.0 (source CSV lacks high/low)
-3. **Simple policy:** Uses standard MlpPolicy, not custom transformer architecture
+3. **Model comparison still needed:** Custom Transformer + Dirichlet is now implemented, but final results should compare it against the legacy `--policy mlp` path on the same splits and seeds.
 4. **PCA news features:** 32-dim PCA compression may lose information vs full 768-dim FinBERT
 5. **Single-seed results:** Production should run 3+ seeds and report mean ± std
 

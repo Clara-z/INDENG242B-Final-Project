@@ -1,0 +1,16 @@
+Whenever the news embedding changes, run these two:
+python -c "
+import pandas as pd, pathlib
+files = sorted(pathlib.Path('data/news').glob('news_finbert_*_daily_pca32.parquet'))
+pd.concat([pd.read_parquet(f) for f in files]).sort_values(['ticker','date']).to_parquet('data/news_embeddings.parquet', index=False)
+"
+
+python rl/build_merged_rl_features.py
+
+then start training:
+source venv/bin/activate
+python rl/train_portfolio_rl.py \
+  --features-path data/rl_features_with_news_pca32.parquet \
+  --total-timesteps 300000 \
+  --eval-freq 25000 \
+  --episode-length 252

@@ -1,0 +1,60 @@
+============================================================
+RUN CONFIGURATION  —  20260511_015307
+============================================================
+
+[DATA]
+  features_path    : data/rl_features_with_news_pca32.parquet
+  n_assets         : 30
+  tickers          : AAL, AAPL, ABEO, ACAD, ACGL, ACHC, ACHV, ACLS, ACMR, ACRS, ADBE, ADI, ADMA, ADP, ADSK, AEHR, AEIS, AEP, AGNC, AKBA, AMC, AMZN, CCO, CCRN, CCS, GOOGL, META, MSFT, NFLX, TSLA
+  n_features       : 72
+  train_days       : 1007   (2019-01-03 → 2022-12-30)
+  val_days         :  250   (2023-01-03 → 2023-12-29)
+  test_days        :  502   (2024-01-02 → 2025-12-31)
+
+[ENVIRONMENT]
+  episode_length   : 252  (0 = full window)
+  turnover_cost    : 0.0005
+  max_weight       : 0.25
+  reward_mode      : simple
+  icvar_alpha      : 0.05  (only active when reward_mode=icvar)
+  icvar_lambda     : 0.5  (only active when reward_mode=icvar)
+  seed             : 42
+
+[PPO HYPERPARAMETERS]
+  total_timesteps  : 300000
+  eval_freq        : 25000
+  learning_rate    : 0.0003
+  n_steps          : 2048
+  batch_size       : 256
+  n_epochs         : 10
+  gamma            : 0.99
+  gae_lambda       : 0.95
+  clip_range       : 0.2
+  ent_coef         : 0.01
+  vf_coef          : 0.5
+  max_grad_norm    : 0.5
+  target_kl        : 0.1
+  weight_decay     : 1e-4   (Adam optimizer L2 penalty)
+
+[POLICY  —  transformer]
+  hidden_dim           : 128
+  asset_encoder_dim    : 128
+  news_proj_dim        : 64
+  transformer_ff_dim   : 256
+  attention_heads      : 4
+  transformer_layers   : 1
+  dropout              : 0.0   (disabled — causes train/eval KL mismatch in PPO)
+  concentration_max    : 20.0  (caps Dirichlet sharpness)
+  concentration_init   : auto  (max(10.0, 2 × n_assets) → alpha_i ≈ 2 at init)
+  distribution         : Dirichlet  (long-only simplex weights)
+  actor_init           : zeros  (starts at uniform allocation)
+
+[MODEL SELECTION]
+  selection_metric : composite (Sharpe − drawdown penalty)
+  score_formula    : val_sharpe  −  0.3 × |val_max_drawdown|
+  drawdown_penalty : 0.3
+  interpretation   : penalises deep drawdowns when choosing best checkpoint;
+                     set --drawdown-penalty 0 to revert to pure Sharpe
+
+[NOTES]
+  (add run-specific observations below this line)

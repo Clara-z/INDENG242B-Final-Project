@@ -30,7 +30,12 @@ try:
     from gymnasium import spaces
     from stable_baselines3 import PPO
     from stable_baselines3.common.callbacks import BaseCallback
+    from stable_baselines3.common.distributions import Distribution
+    from stable_baselines3.common.policies import ActorCriticPolicy
     from stable_baselines3.common.vec_env import DummyVecEnv, VecMonitor
+    import torch as th
+    from torch import nn
+    import torch.nn.functional as th_f
 
     HAS_RL_DEPS = True
 except ModuleNotFoundError:
@@ -41,6 +46,11 @@ except ModuleNotFoundError:
     BaseCallback = object
     DummyVecEnv = None
     VecMonitor = None
+    Distribution = object
+    ActorCriticPolicy = object
+    th = None
+    nn = None
+    th_f = None
 
 
 def parse_args() -> argparse.Namespace:
@@ -58,11 +68,17 @@ def parse_args() -> argparse.Namespace:
         help="Root folder where run artifacts are written.",
     )
     parser.add_argument("--train-start", type=str, default="2018-01-01")
-    parser.add_argument("--train-end", type=str, default="2023-06-30")
-    parser.add_argument("--val-start", type=str, default="2023-07-01")
+    parser.add_argument("--train-end", type=str, default="2022-12-31")
+    parser.add_argument("--val-start", type=str, default="2023-01-01")
     parser.add_argument("--val-end", type=str, default="2023-12-31")
     parser.add_argument("--test-start", type=str, default="2024-01-01")
-    parser.add_argument("--test-end", type=str, default="2026-01-31")
+    parser.add_argument("--test-end", type=str, default="2025-12-31")
+    parser.add_argument(
+        "--drawdown-penalty",
+        type=float,
+        default=0.3,
+        help="Weight on |max_drawdown| in composite model-selection score: sharpe - penalty * |drawdown|.",
+    )
     parser.add_argument("--total-timesteps", type=int, default=300_000)
     parser.add_argument("--eval-freq", type=int, default=25_000)
     parser.add_argument("--episode-length", type=int, default=252)
@@ -78,6 +94,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--icvar-alpha", type=float, default=0.05)
     parser.add_argument("--icvar-lambda", type=float, default=0.5)
     parser.add_argument("--learning-rate", type=float, default=3e-4)
+    parser.add_argument(
+        "--policy",
+        type=str,
+        choices=["transformer", "mlp"],
+        default="transformer",
+        help="transformer: custom cross-asset attention + Dirichlet policy; mlp: legacy SB3 MlpPolicy.",
+    )
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument(
         "--dry-run",
@@ -242,6 +265,314 @@ def standardize_by_train(train: PanelData, *others: PanelData) -> tuple[PanelDat
 
 
 if HAS_RL_DEPS:
+
+    class DirichletPortfolioDistribution(Distribution):
+        """Dirichlet distribution over long-only portfolio simplex weights."""
+
+        def __init__(self, action_dim: int, eps: float = 1e-8) -> None:
+            super().__init__()
+            self.action_dim = int(action_dim)
+            self.eps = float(eps)
+            self.alpha: th.Tensor | None = None
+
+        def proba_distribution_net(self, *args: Any, **kwargs: Any) -> nn.Module:
+            return nn.Identity()
+
+        def proba_distribution(self, alpha: th.Tensor) -> "DirichletPortfolioDistribution":
+            self.alpha = alpha.clamp_min(1e-3)
+            self.distribution = th.distributions.Dirichlet(self.alpha)
+            return self
+
+        def _normalize_actions(self, actions: th.Tensor) -> th.Tensor:
+            actions = actions.reshape((-1, self.action_dim))
+            actions = actions.clamp_min(self.eps)
+            return actions / actions.sum(dim=-1, keepdim=True).clamp_min(self.eps)
+
+        def log_prob(self, actions: th.Tensor) -> th.Tensor:
+            return self.distribution.log_prob(self._normalize_actions(actions))
+
+        def entropy(self) -> th.Tensor:
+            return self.distribution.entropy()
+
+        def sample(self) -> th.Tensor:
+            actions = self.distribution.rsample()
+            return self._normalize_actions(actions)
+
+        def mode(self) -> th.Tensor:
+            alpha = self.alpha
+            if alpha is None:
+                raise RuntimeError("Distribution parameters have not been set.")
+            return alpha / alpha.sum(dim=-1, keepdim=True).clamp_min(self.eps)
+
+        def actions_from_params(self, alpha: th.Tensor, deterministic: bool = False) -> th.Tensor:
+            self.proba_distribution(alpha)
+            return self.get_actions(deterministic=deterministic)
+
+        def log_prob_from_params(self, alpha: th.Tensor) -> tuple[th.Tensor, th.Tensor]:
+            actions = self.actions_from_params(alpha)
+            return actions, self.log_prob(actions)
+
+
+    class PortfolioTransformerPolicy(ActorCriticPolicy):  # type: ignore[misc]
+        """
+        Transformer actor-critic for portfolio weights.
+
+        The environment still exposes the current flat Box observation for SB3
+        compatibility. This policy reshapes that vector back to
+        (batch, assets, features + prev_weight), applies a shared per-asset
+        encoder, cross-asset transformer attention, and a Dirichlet actor head.
+        """
+
+        MARKET_FEATURES = {
+            "vix",
+            "vix_change_20d",
+            "tsy_10y_2y_spread",
+            "spy_ret_20d",
+            "spy_vol_20d",
+        }
+
+        def __init__(
+            self,
+            observation_space: spaces.Space,
+            action_space: spaces.Space,
+            lr_schedule: Any,
+            feature_cols: list[str] | None = None,
+            global_dim: int = 3,
+            hidden_dim: int = 128,
+            asset_encoder_dim: int = 128,
+            news_proj_dim: int = 64,
+            transformer_ff_dim: int = 256,
+            attention_heads: int = 4,
+            transformer_layers: int = 1,
+            dropout: float = 0.0,
+            concentration_init: float | None = None,
+            concentration_max: float = 20.0,
+            **kwargs: Any,
+        ) -> None:
+            self.feature_cols = list(feature_cols) if feature_cols is not None else None
+            self.global_dim = int(global_dim)
+            self.hidden_dim = int(hidden_dim)
+            self.asset_encoder_dim = int(asset_encoder_dim)
+            self.news_proj_dim = int(news_proj_dim)
+            self.transformer_ff_dim = int(transformer_ff_dim)
+            self.attention_heads = int(attention_heads)
+            self.transformer_layers = int(transformer_layers)
+            self.dropout = float(dropout)
+            self.concentration_init = None if concentration_init is None else float(concentration_init)
+            self.concentration_max = float(concentration_max)
+            kwargs.setdefault("ortho_init", False)
+            kwargs.setdefault("net_arch", [])
+            super().__init__(observation_space, action_space, lr_schedule, **kwargs)
+
+        def _build(self, lr_schedule: Any) -> None:
+            if len(self.action_space.shape) != 1:
+                raise ValueError("PortfolioTransformerPolicy requires a 1D Box action space.")
+            if len(self.observation_space.shape) != 1:
+                raise ValueError("PortfolioTransformerPolicy requires a flat 1D observation space.")
+
+            self.n_assets = int(self.action_space.shape[0])
+            obs_dim = int(self.observation_space.shape[0])
+            per_asset_total, remainder = divmod(obs_dim - self.global_dim, self.n_assets)
+            if remainder != 0 or per_asset_total < 2:
+                raise ValueError(
+                    f"Observation dim {obs_dim} is incompatible with {self.n_assets} assets "
+                    f"and global_dim={self.global_dim}."
+                )
+            self.n_raw_features = per_asset_total - 1
+            if self.feature_cols is None:
+                self.feature_cols = [f"feature_{i}" for i in range(self.n_raw_features)]
+            if len(self.feature_cols) != self.n_raw_features:
+                raise ValueError(
+                    f"feature_cols has {len(self.feature_cols)} columns, "
+                    f"but observation implies {self.n_raw_features} raw features."
+                )
+
+            news_idx = [
+                i
+                for i, col in enumerate(self.feature_cols)
+                if col.startswith(("news_pca_", "emb_", "sentiment_"))
+                or col in {"n_articles", "mean_tone"}
+            ]
+            has_news_idx = [i for i, col in enumerate(self.feature_cols) if col == "has_news"]
+            market_idx = [i for i, col in enumerate(self.feature_cols) if col in self.MARKET_FEATURES]
+            excluded = set(news_idx) | set(has_news_idx) | set(market_idx)
+            scalar_idx = [i for i in range(self.n_raw_features) if i not in excluded]
+
+            self.register_buffer("scalar_idx", th.as_tensor(scalar_idx, dtype=th.long), persistent=False)
+            self.register_buffer("news_idx", th.as_tensor(news_idx, dtype=th.long), persistent=False)
+            self.register_buffer("has_news_idx", th.as_tensor(has_news_idx, dtype=th.long), persistent=False)
+            self.register_buffer("market_idx", th.as_tensor(market_idx, dtype=th.long), persistent=False)
+
+            effective_news_dim = self.news_proj_dim if news_idx else 0
+            if news_idx:
+                self.news_projection = nn.Sequential(
+                    nn.Linear(len(news_idx), self.news_proj_dim),
+                    nn.LayerNorm(self.news_proj_dim),
+                )
+            else:
+                self.news_projection = None
+
+            asset_input_dim = len(scalar_idx) + effective_news_dim + len(has_news_idx) + 1
+            self.asset_encoder = nn.Sequential(
+                nn.Linear(asset_input_dim, self.asset_encoder_dim),
+                nn.GELU(),
+                nn.Dropout(self.dropout),
+                nn.Linear(self.asset_encoder_dim, self.hidden_dim),
+                nn.GELU(),
+                nn.LayerNorm(self.hidden_dim),
+            )
+            encoder_layer = nn.TransformerEncoderLayer(
+                d_model=self.hidden_dim,
+                nhead=self.attention_heads,
+                dim_feedforward=self.transformer_ff_dim,
+                dropout=self.dropout,
+                activation="gelu",
+                batch_first=True,
+                norm_first=True,
+            )
+            self.cross_asset_attention = nn.TransformerEncoder(encoder_layer, num_layers=self.transformer_layers)
+
+            self.global_query = nn.Parameter(th.randn(1, 1, self.hidden_dim) * 0.02)
+            self.global_attention = nn.MultiheadAttention(
+                embed_dim=self.hidden_dim,
+                num_heads=self.attention_heads,
+                dropout=self.dropout,
+                batch_first=True,
+            )
+            trunk_input_dim = self.hidden_dim + self.global_dim + len(market_idx)
+            self.shared_trunk = nn.Sequential(
+                nn.Linear(trunk_input_dim, self.hidden_dim),
+                nn.GELU(),
+                nn.Dropout(self.dropout),
+                nn.LayerNorm(self.hidden_dim),
+            )
+            self.actor_head = nn.Sequential(
+                nn.Linear(self.hidden_dim, 64),
+                nn.GELU(),
+                nn.Linear(64, 1),
+            )
+            final_actor = self.actor_head[-1]
+            if isinstance(final_actor, nn.Linear):
+                final_actor.weight.data.zero_()
+                final_actor.bias.data.zero_()
+            self.concentration_head = nn.Sequential(
+                nn.Linear(self.hidden_dim, 64),
+                nn.GELU(),
+                nn.Linear(64, 1),
+            )
+            self.value_net = nn.Sequential(
+                nn.Linear(self.hidden_dim, 64),
+                nn.GELU(),
+                nn.Linear(64, 1),
+            )
+            final_concentration = self.concentration_head[-1]
+            if isinstance(final_concentration, nn.Linear):
+                initial_concentration = self.concentration_init
+                if initial_concentration is None:
+                    initial_concentration = max(10.0, 2.0 * float(self.n_assets))
+                target = max(initial_concentration - 1.0, 1e-3)
+                final_concentration.bias.data.fill_(float(np.log(np.expm1(target))))
+
+            self.action_dist = DirichletPortfolioDistribution(self.n_assets)
+            self.optimizer = self.optimizer_class(  # type: ignore[call-arg]
+                self.parameters(),
+                lr=lr_schedule(1),
+                **self.optimizer_kwargs,
+            )
+
+        def _split_flat_obs(self, obs: th.Tensor) -> tuple[th.Tensor, th.Tensor, th.Tensor]:
+            if obs.dim() == 1:
+                obs = obs.unsqueeze(0)
+            obs = obs.float()
+            asset_flat_dim = self.n_assets * (self.n_raw_features + 1)
+            asset_block = obs[:, :asset_flat_dim].reshape(
+                obs.shape[0],
+                self.n_assets,
+                self.n_raw_features + 1,
+            )
+            global_portfolio = obs[:, asset_flat_dim : asset_flat_dim + self.global_dim]
+            return asset_block[:, :, : self.n_raw_features], asset_block[:, :, -1:], global_portfolio
+
+        def _select_features(self, raw_features: th.Tensor, indices: th.Tensor) -> th.Tensor:
+            if indices.numel() == 0:
+                return raw_features.new_empty((*raw_features.shape[:2], 0))
+            return raw_features.index_select(dim=-1, index=indices)
+
+        def _encode(self, obs: th.Tensor) -> tuple[th.Tensor, th.Tensor]:
+            raw_features, prev_w, global_portfolio = self._split_flat_obs(obs)
+            pieces = [self._select_features(raw_features, self.scalar_idx)]
+            if self.news_projection is not None:
+                pieces.append(self.news_projection(self._select_features(raw_features, self.news_idx)))
+            pieces.append(self._select_features(raw_features, self.has_news_idx))
+            pieces.append(prev_w)
+
+            asset_input = th.cat(pieces, dim=-1)
+            encoded_assets = self.asset_encoder(asset_input)
+            attended_assets = self.cross_asset_attention(encoded_assets)
+
+            if self.market_idx.numel() > 0:
+                market = raw_features[:, 0, :].index_select(dim=-1, index=self.market_idx)
+                global_features = th.cat([global_portfolio, market], dim=-1)
+            else:
+                global_features = global_portfolio
+            global_broadcast = global_features.unsqueeze(1).expand(-1, self.n_assets, -1)
+            h = self.shared_trunk(th.cat([attended_assets, global_broadcast], dim=-1))
+
+            query = self.global_query.expand(raw_features.shape[0], -1, -1)
+            pooled, _ = self.global_attention(query, h, h, need_weights=False)
+            return h, pooled.squeeze(1)
+
+        def _distribution_and_value(self, obs: th.Tensor) -> tuple[DirichletPortfolioDistribution, th.Tensor]:
+            h, pooled = self._encode(obs)
+            logits = self.actor_head(h).squeeze(-1)
+            mean = th_f.softmax(logits, dim=-1)
+            log_concentration = self.concentration_head(pooled)
+            concentration = (th_f.softplus(log_concentration) + 1.0).clamp(max=self.concentration_max)
+            alpha = mean * concentration + 1e-3
+            values = self.value_net(pooled)
+            return self.action_dist.proba_distribution(alpha), values
+
+        def forward(self, obs: th.Tensor, deterministic: bool = False) -> tuple[th.Tensor, th.Tensor, th.Tensor]:
+            distribution, values = self._distribution_and_value(obs)
+            actions = distribution.get_actions(deterministic=deterministic)
+            log_prob = distribution.log_prob(actions)
+            return actions.reshape((-1, *self.action_space.shape)), values, log_prob
+
+        def evaluate_actions(self, obs: th.Tensor, actions: th.Tensor) -> tuple[th.Tensor, th.Tensor, th.Tensor]:
+            distribution, values = self._distribution_and_value(obs)
+            log_prob = distribution.log_prob(actions)
+            entropy = distribution.entropy()
+            return values, log_prob, entropy
+
+        def get_distribution(self, obs: th.Tensor) -> DirichletPortfolioDistribution:
+            distribution, _ = self._distribution_and_value(obs)
+            return distribution
+
+        def predict_values(self, obs: th.Tensor) -> th.Tensor:
+            _, values = self._distribution_and_value(obs)
+            return values
+
+        def _predict(self, observation: th.Tensor, deterministic: bool = False) -> th.Tensor:
+            return self.get_distribution(observation).get_actions(deterministic=deterministic)
+
+        def _get_constructor_parameters(self) -> dict[str, Any]:
+            data = super()._get_constructor_parameters()
+            data.update(
+                dict(
+                    feature_cols=self.feature_cols,
+                    global_dim=self.global_dim,
+                    hidden_dim=self.hidden_dim,
+                    asset_encoder_dim=self.asset_encoder_dim,
+                    news_proj_dim=self.news_proj_dim,
+                    transformer_ff_dim=self.transformer_ff_dim,
+                    attention_heads=self.attention_heads,
+                    transformer_layers=self.transformer_layers,
+                    dropout=self.dropout,
+                    concentration_init=self.concentration_init,
+                    concentration_max=self.concentration_max,
+                )
+            )
+            return data
 
     class PortfolioEnv(gym.Env):  # type: ignore[misc]
         metadata = {"render_modes": []}
@@ -463,6 +794,157 @@ def build_test_daily_dataframe(test_info: dict[str, Any]) -> pd.DataFrame:
     )
 
 
+def _linear_decay(initial_lr: float, min_lr: float = 1e-5):
+    """Returns an SB3-compatible LR schedule: linearly decays from initial_lr to min_lr."""
+    def schedule(progress_remaining: float) -> float:
+        return min_lr + (initial_lr - min_lr) * progress_remaining
+    return schedule
+
+
+def build_ppo_model(
+    policy_name: str,
+    train_env: Any,
+    feature_cols: list[str],
+    learning_rate: float,
+    seed: int,
+    n_steps: int = 2048,
+    batch_size: int = 256,
+    n_epochs: int = 10,
+) -> Any:
+    if not HAS_RL_DEPS:
+        raise RuntimeError("RL dependencies are required to build a PPO model.")
+
+    if policy_name == "transformer":
+        policy: Any = PortfolioTransformerPolicy
+        policy_kwargs: dict[str, Any] | None = {"feature_cols": feature_cols}
+    elif policy_name == "mlp":
+        policy = "MlpPolicy"
+        policy_kwargs = None
+    else:
+        raise ValueError(f"Unsupported policy: {policy_name}")
+
+    kwargs: dict[str, Any] = {
+        "learning_rate": _linear_decay(learning_rate),
+        "n_steps": n_steps,
+        "batch_size": batch_size,
+        "n_epochs": n_epochs,
+        "gamma": 0.99,
+        "gae_lambda": 0.95,
+        "clip_range": 0.2,
+        "ent_coef": 0.001,
+        "vf_coef": 0.5,
+        "max_grad_norm": 0.3,
+        "target_kl": 0.1,
+        "verbose": 1,
+        "seed": seed,
+        "policy_kwargs": {**(policy_kwargs or {}), "optimizer_kwargs": {"weight_decay": 1e-4}},
+    }
+    policy_kwargs = None  # already merged above
+    if policy_kwargs is not None:
+        kwargs["policy_kwargs"] = policy_kwargs
+    return PPO(policy, train_env, **kwargs)
+
+
+def write_run_config(
+    run_dir: Path,
+    run_id: str,
+    args: argparse.Namespace,
+    train: "PanelData",
+    val: "PanelData",
+    test: "PanelData",
+) -> None:
+    """Write a human-readable record of every hyperparameter and design choice for this run."""
+
+    def fmt_date(dates: "np.ndarray") -> str:
+        return f"{pd.Timestamp(dates[0]).date()} → {pd.Timestamp(dates[-1]).date()}"
+
+    # Score formula description
+    score_formula = f"val_sharpe  −  {args.drawdown_penalty} × |val_max_drawdown|"
+
+    # Selection metric name
+    if args.drawdown_penalty == 0.0:
+        selection_metric = "pure Sharpe ratio"
+    else:
+        selection_metric = "composite (Sharpe − drawdown penalty)"
+
+    lines = [
+        "=" * 60,
+        f"RUN CONFIGURATION  —  {run_id}",
+        "=" * 60,
+        "",
+        "[DATA]",
+        f"  features_path    : {args.features_path}",
+        f"  n_assets         : {len(train.tickers)}",
+        f"  tickers          : {', '.join(train.tickers)}",
+        f"  n_features       : {len(train.feature_cols)}",
+        f"  train_days       : {len(train.dates):>4}   ({fmt_date(train.dates)})",
+        f"  val_days         : {len(val.dates):>4}   ({fmt_date(val.dates)})",
+        f"  test_days        : {len(test.dates):>4}   ({fmt_date(test.dates)})",
+        "",
+        "[ENVIRONMENT]",
+        f"  episode_length   : {args.episode_length}  (0 = full window)",
+        f"  turnover_cost    : {args.turnover_cost}",
+        f"  max_weight       : {args.max_weight}",
+        f"  reward_mode      : {args.reward_mode}",
+        f"  icvar_alpha      : {args.icvar_alpha}  (only active when reward_mode=icvar)",
+        f"  icvar_lambda     : {args.icvar_lambda}  (only active when reward_mode=icvar)",
+        f"  seed             : {args.seed}",
+        "",
+        "[PPO HYPERPARAMETERS]",
+        f"  total_timesteps  : {args.total_timesteps}",
+        f"  eval_freq        : {args.eval_freq}",
+        f"  learning_rate    : {args.learning_rate} → 1e-5  (linear decay with floor)",
+        "  n_steps          : 2048",
+        "  batch_size       : 256",
+        "  n_epochs         : 10",
+        "  gamma            : 0.99",
+        "  gae_lambda       : 0.95",
+        "  clip_range       : 0.2",
+        "  ent_coef         : 0.001",
+        "  vf_coef          : 0.5",
+        "  max_grad_norm    : 0.3",
+        "  target_kl        : 0.1",
+        "  weight_decay     : 1e-4   (Adam optimizer L2 penalty)",
+        "",
+        f"[POLICY  —  {args.policy}]",
+    ]
+
+    if args.policy == "transformer":
+        lines += [
+            "  hidden_dim           : 128",
+            "  asset_encoder_dim    : 128",
+            "  news_proj_dim        : 64",
+            "  transformer_ff_dim   : 256",
+            "  attention_heads      : 4",
+            "  transformer_layers   : 1",
+            "  dropout              : 0.0   (disabled — causes train/eval KL mismatch in PPO)",
+            "  concentration_max    : 20.0  (caps Dirichlet sharpness)",
+            "  concentration_init   : auto  (max(10.0, 2 × n_assets) → alpha_i ≈ 2 at init)",
+            "  distribution         : Dirichlet  (long-only simplex weights)",
+            "  actor_init           : zeros  (starts at uniform allocation)",
+        ]
+    else:
+        lines.append("  architecture         : SB3 MlpPolicy defaults")
+
+    lines += [
+        "",
+        "[MODEL SELECTION]",
+        f"  selection_metric : {selection_metric}",
+        f"  score_formula    : {score_formula}",
+        f"  drawdown_penalty : {args.drawdown_penalty}",
+        "  interpretation   : penalises deep drawdowns when choosing best checkpoint;",
+        "                     set --drawdown-penalty 0 to revert to pure Sharpe",
+        "",
+        "[NOTES]",
+        "  (add run-specific observations below this line)",
+        "",
+    ]
+
+    config_path = run_dir / "run_config.txt"
+    config_path.write_text("\n".join(lines), encoding="utf-8")
+    print(f"[config] written to {config_path}")
+
+
 def write_plots(run_dir: Path, train_df: pd.DataFrame, val_df: pd.DataFrame, test_info: dict, base_info: dict) -> None:
     plot_dir = run_dir / "plots"
     plot_dir.mkdir(parents=True, exist_ok=True)
@@ -566,6 +1048,8 @@ def main() -> None:
     model_dir.mkdir(parents=True, exist_ok=True)
     metrics_dir.mkdir(parents=True, exist_ok=True)
 
+    write_run_config(run_dir, run_id, args, train, val, test)
+
     train_env = VecMonitor(
         DummyVecEnv(
             [
@@ -606,26 +1090,17 @@ def main() -> None:
         seed=args.seed,
     )
 
-    model = PPO(
-        "MlpPolicy",
-        train_env,
+    model = build_ppo_model(
+        policy_name=args.policy,
+        train_env=train_env,
+        feature_cols=train.feature_cols,
         learning_rate=args.learning_rate,
-        n_steps=2048,
-        batch_size=256,
-        n_epochs=10,
-        gamma=0.99,
-        gae_lambda=0.95,
-        clip_range=0.2,
-        ent_coef=0.01,
-        vf_coef=0.5,
-        max_grad_norm=0.5,
-        verbose=1,
         seed=args.seed,
     )
 
     callback = TrainLogCallback()
     val_rows: list[dict[str, float]] = []
-    best_sharpe = float("-inf")
+    best_score = float("-inf")
     best_path = model_dir / "best_model.zip"
 
     trained = 0
@@ -641,16 +1116,17 @@ def main() -> None:
             "val_hit_rate": float(val_info.get("episode_hit_rate", 0.0)),
             "val_max_drawdown": float(val_info.get("episode_max_drawdown", 0.0)),
         }
+        row["val_score"] = row["val_sharpe"] - args.drawdown_penalty * abs(row["val_max_drawdown"])
         val_rows.append(row)
         print(
             f"[eval] t={trained} "
             f"return={row['val_return']:.4f} sharpe={row['val_sharpe']:.3f} "
-            f"hit_rate={row['val_hit_rate']:.3f}"
+            f"drawdown={row['val_max_drawdown']:.3f} score={row['val_score']:.3f}"
         )
-        if row["val_sharpe"] > best_sharpe:
-            best_sharpe = row["val_sharpe"]
+        if row["val_score"] > best_score:
+            best_score = row["val_score"]
             model.save(best_path)
-            print(f"[checkpoint] new best val sharpe={best_sharpe:.4f}")
+            print(f"[checkpoint] new best val score={best_score:.4f} (sharpe={row['val_sharpe']:.4f}, dd={row['val_max_drawdown']:.4f})")
 
     final_path = model_dir / "final_model.zip"
     model.save(final_path)
@@ -676,11 +1152,13 @@ def main() -> None:
             "test": [args.test_start, args.test_end],
         },
         "reward_mode": args.reward_mode,
+        "policy": args.policy,
         "icvar_alpha": float(args.icvar_alpha),
         "icvar_lambda": float(args.icvar_lambda),
         "train_assets": len(train.tickers),
         "feature_count": len(train.feature_cols),
-        "best_val_sharpe": float(best_sharpe),
+        "best_val_score": float(best_score),
+        "drawdown_penalty": float(args.drawdown_penalty),
         "test_rl": {
             "return": float(test_info.get("episode_return", 0.0)),
             "sharpe": float(test_info.get("episode_sharpe", 0.0)),

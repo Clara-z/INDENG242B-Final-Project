@@ -1,0 +1,44 @@
+{
+  "run_id": "20260511_005351",
+  "features_path": "data/rl_features_with_news_pca32.parquet",
+  "split": {
+    "train": [
+      "2018-01-01",
+      "2023-06-30"
+    ],
+    "val": [
+      "2023-07-01",
+      "2023-12-31"
+    ],
+    "test": [
+      "2024-01-01",
+      "2026-01-31"
+    ]
+  },
+  "reward_mode": "simple",
+  "policy": "transformer",
+  "icvar_alpha": 0.05,
+  "icvar_lambda": 0.5,
+  "train_assets": 30,
+  "feature_count": 73,
+  "best_val_sharpe": 0.06792060297230951,
+  "test_rl": {
+    "return": 0.5081673542556624,
+    "sharpe": 1.0047673900337515,
+    "hit_rate": 0.5403846153846154,
+    "max_drawdown": -0.2634971901279214
+  },
+  "test_equal_weight": {
+    "return": 0.5060808931750613,
+    "sharpe": 1.0024170255859473,
+    "hit_rate": 0.5384615384615384,
+    "max_drawdown": -0.2631948525527844
+  },
+  "artifacts": {
+    "best_model": "results/rl_runs/20260511_005351/models/best_model.zip",
+    "final_model": "results/rl_runs/20260511_005351/models/final_model.zip",
+    "train_metrics": "results/rl_runs/20260511_005351/metrics/train_metrics.csv",
+    "val_metrics": "results/rl_runs/20260511_005351/metrics/val_metrics.csv",
+    "test_daily_returns": "results/rl_runs/20260511_005351/metrics/test_daily_returns.csv"
+  }
+}
