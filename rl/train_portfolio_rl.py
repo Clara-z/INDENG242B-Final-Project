@@ -1103,6 +1103,7 @@ def main() -> None:
     best_score = float("-inf")
     best_path = model_dir / "best_model.zip"
 
+    train_start_wall = datetime.now()
     trained = 0
     while trained < args.total_timesteps:
         chunk = min(args.eval_freq, args.total_timesteps - trained)
@@ -1127,6 +1128,14 @@ def main() -> None:
             best_score = row["val_score"]
             model.save(best_path)
             print(f"[checkpoint] new best val score={best_score:.4f} (sharpe={row['val_sharpe']:.4f}, dd={row['val_max_drawdown']:.4f})")
+
+    train_end_wall = datetime.now()
+    elapsed = train_end_wall - train_start_wall
+    total_seconds = int(elapsed.total_seconds())
+    h, rem = divmod(total_seconds, 3600)
+    m, s = divmod(rem, 60)
+    elapsed_str = f"{h:02d}:{m:02d}:{s:02d}"
+    print(f"[time] training finished in {elapsed_str}  ({total_seconds}s)")
 
     final_path = model_dir / "final_model.zip"
     model.save(final_path)
@@ -1159,6 +1168,8 @@ def main() -> None:
         "feature_count": len(train.feature_cols),
         "best_val_score": float(best_score),
         "drawdown_penalty": float(args.drawdown_penalty),
+        "training_time": elapsed_str,
+        "training_seconds": total_seconds,
         "test_rl": {
             "return": float(test_info.get("episode_return", 0.0)),
             "sharpe": float(test_info.get("episode_sharpe", 0.0)),
@@ -1183,6 +1194,14 @@ def main() -> None:
         json.dump(summary, f, indent=2)
 
     write_plots(run_dir, train_df, val_df, test_info, base_info)
+
+    config_path = run_dir / "run_config.txt"
+    with config_path.open("a", encoding="utf-8") as f:
+        f.write(f"\n[TIMING]\n")
+        f.write(f"  started          : {train_start_wall.strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"  finished         : {train_end_wall.strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"  total_duration   : {elapsed_str}  ({total_seconds}s)\n")
+
     print(f"[done] Artifacts written to: {run_dir}")
 
 

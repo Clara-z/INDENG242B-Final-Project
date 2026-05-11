@@ -29,12 +29,12 @@ CCS, TSLA, NFLX, MSFT, META, GOOGL, AMZN, AGNC, AKBA, AMC
 
 | Split | Start | End | Trading Days (aligned panel) |
 |-------|-------|-----|------------------------------|
-| **Full data** | 2018-01-02 | 2026-01-30 | ~2,031 |
-| **Train** | 2018-01-01 | 2023-06-30 | ~1,131 |
-| **Validation** | 2023-07-01 | 2023-12-31 | ~126 |
-| **Test** | 2024-01-01 | 2026-01-31 | ~521 |
+| **Full data** | 2018-01-02 | 2025-12-31 | ~2,010 |
+| **Train** | 2018-01-01 | 2022-12-31 | ~1,007 |
+| **Validation** | 2023-01-01 | 2023-12-31 | ~250 |
+| **Test** | 2024-01-01 | 2025-12-31 | ~502 |
 
-**Default in code:** `rl/train_portfolio_rl.py` uses `--train-start 2018-01-01` (first aligned dates may be slightly after 2018-01-02 where all assets have complete numeric rows, e.g. long lookbacks like `ret_252d`).
+**Default in code:** `rl/train_portfolio_rl.py` uses `--train-start 2018-01-01` (first aligned trading day is 2019-01-03 after panel cleaning drops rows where any asset has NaN features due to long lookbacks like `ret_252d`). Validation uses the full 2023 calendar year (~250 days), replacing the earlier 6-month window which was too short for reliable Sharpe estimation.
 
 ---
 
@@ -289,34 +289,48 @@ The implementation adapts the old architecture to the actual data contract:
 PPO(
     PortfolioTransformerPolicy,
     env,
-    policy_kwargs={"feature_cols": train.feature_cols},
-    learning_rate=3e-4,
+    policy_kwargs={
+        "feature_cols": train.feature_cols,
+        "optimizer_kwargs": {"weight_decay": 1e-4},  # L2 regularization
+    },
+    learning_rate=_linear_decay(3e-4, min_lr=1e-5),  # 3e-4 → 1e-5 linear decay
     n_steps=2048,
     batch_size=256,
     n_epochs=10,
     gamma=0.99,
     gae_lambda=0.95,
     clip_range=0.2,
-    ent_coef=0.01,
+    ent_coef=0.001,       # lowered from 0.01 — entropy was dominating policy gradient
     vf_coef=0.5,
-    max_grad_norm=0.5,
-    target_kl=0.02,
+    max_grad_norm=0.3,    # tightened from 0.5 to prevent late-stage gradient spikes
+    target_kl=0.15,       # raised from 0.02 — Dirichlet log-probs are ~50× Gaussian scale
     seed=42,
 )
 ```
+
+**Key deviations from SB3 defaults and rationale:**
+
+| Parameter | SB3 default | Current value | Why |
+|-----------|-------------|---------------|-----|
+| `ent_coef` | 0.0 | 0.001 | With 0.01 entropy dominated 1000× over policy gradient — policy locked at equal-weight |
+| `target_kl` | None | 0.15 | Dirichlet log-prob magnitude (~73–9000) is far above Gaussian range — 0.02 fires after 4–5 minibatch steps |
+| `max_grad_norm` | 0.5 | 0.3 | Late-stage Dirichlet concentration collapse caused approx_kl spikes >1 without tighter clipping |
+| `learning_rate` | constant | linear decay | Constant 3e-4 caused entropy explosion at ~220k steps; decay to 1e-5 prevents late instability |
+| `dropout` | N/A | **0.0 (disabled)** | PPO collects rollouts in eval mode but updates in train mode — dropout makes `old_log_prob ≠ new_log_prob` at step 0, triggering spurious KL violations |
 
 ### 4.3 Training Budget
 
 | Setting | Recommended | Quick Test |
 |---------|-------------|------------|
 | Total timesteps | 5,000,000 | 300,000 |
-| Eval frequency | 100,000 | 25,000 |
+| Eval frequency | 25,000 | 25,000 |
 | Episode length | 252 | 252 |
 
-**Estimated training time for 5M steps:**
-- Mac M4 Pro: ~3h 15m
-- Colab T4: ~2h 30m
-- Colab A100: ~1h
+**Measured training time (Mac M2/M4, CPU only):**
+- 5M steps: **~77 minutes** (measured, run `20260511_031334`)
+- 300K steps: ~8–10 minutes
+
+**Note:** The eval frequency of 100,000 steps in early estimates was too coarse. With `--eval-freq 25000` the val Sharpe trajectory is much more granular and checkpoint selection is more accurate at the cost of ~5% extra wall time per 5M run.
 
 ### 4.4 Checkpointing
 
@@ -368,20 +382,23 @@ Each run creates `results/rl_runs/<timestamp>/`:
 
 ```
 <timestamp>/
+├── run_config.txt          # All hyperparameters, splits, model selection formula, timing
 ├── models/
-│   ├── best_model.zip      # Best validation Sharpe checkpoint
+│   ├── best_model.zip      # Best composite-score checkpoint
 │   └── final_model.zip     # Final training checkpoint
 ├── metrics/
-│   ├── train_metrics.csv   # Per-rollout training stats
-│   ├── val_metrics.csv     # Validation metrics per eval
-│   ├── test_daily_returns.csv  # Daily test performance
-│   └── summary.json        # Run configuration and final metrics
+│   ├── train_metrics.csv   # Per-rollout training stats (LR, entropy, KL, clip_fraction…)
+│   ├── val_metrics.csv     # val_return, val_sharpe, val_hit_rate, val_max_drawdown, val_score
+│   ├── test_daily_returns.csv  # Daily RL returns and equity curve
+│   └── summary.json        # Run config + final metrics + training_time
 └── plots/
     ├── loss_curves.png
     ├── avg_reward.png
     ├── val_sharpe_hit_rate.png
     └── test_equity_curve.png
 ```
+
+`run_config.txt` is written immediately when the run directory is created (before training starts) and a `[TIMING]` block is appended on completion. It is the primary artifact for tracing hyperparameter choices across runs.
 
 ### 5.3 Metrics
 
@@ -500,26 +517,112 @@ python rl/train_portfolio_rl.py --total-timesteps 5000000  # Train
 
 ## 9. Known Limitations
 
-1. **Survivorship bias:** Universe is fixed; no handling of delistings or index changes
-2. **No high/low prices:** `high_low_range_5d` is set to 0.0 (source CSV lacks high/low)
-3. **Model comparison still needed:** Custom Transformer + Dirichlet is now implemented, but final results should compare it against the legacy `--policy mlp` path on the same splits and seeds.
-4. **PCA news features:** 32-dim PCA compression may lose information vs full 768-dim FinBERT
-5. **Single-seed results:** Production should run 3+ seeds and report mean ± std
+### 9.1 Data and Universe
+
+1. **Survivorship bias:** Universe is fixed at 30 tickers selected retrospectively. Stocks that were delisted, merged, or went bankrupt during 2018–2025 are absent. The model is trained and evaluated on survivors only, which upward-biases expected returns.
+2. **No intraday price data:** `high_low_range_5d` is set to 0.0 because the source CSV lacks daily high/low prices. True volatility proxies (ATR, Garman-Klass) are unavailable.
+4. **Fixed PCA basis:** The 32 PCA components are fitted on all news in the corpus before training. If the semantic topics of financial news shift over the test window (e.g., AI in 2023–2025 vs. COVID in 2020), earlier PCA dimensions may not capture the new dominant themes.
+
+### 9.2 Training Stability
+
+5. **Dirichlet log-prob scale mismatch with PPO:** The Dirichlet distribution's log-probability over a 30-asset simplex is typically in the range +40 to +100 — roughly 50–100× larger in magnitude than the Gaussian log-probs PPO was designed for. This makes the standard `target_kl=0.02` threshold fire after only 4–5 minibatch updates. The working threshold used here (`target_kl=0.1`) is an empirical fix, not a principled value.
+6. **Dropout incompatible with PPO's KL check:** Standard dropout introduces a train/eval mode discrepancy. During rollout collection the policy runs in eval mode (dropout off); during the update step it runs in train mode (dropout on). This means `old_log_prob ≠ new_log_prob` even before any gradient step is applied — the KL check fires at step 0 as training progresses and the Dirichlet distribution sharpens. Dropout is disabled in this implementation as a result; weight decay is used instead.
+7. **Entropy explosion at high learning rate:** With `ent_coef=0.001`, the policy gradient has enough influence to move the Dirichlet concentration parameters toward zero. Beyond ~200k steps at constant `lr=3e-4`, the concentration collapses, entropy diverges (observed reaching 1900 in training logs), and the policy becomes incoherent. Linear LR decay with a floor partially mitigates this but the fundamental tension between exploration (low concentration) and stability (bounded entropy) is not resolved.
+8. **Policy slow to differentiate from equal-weight:** The Dirichlet distribution initialized at `alpha_i ≈ 2` for all assets is nearly uniform. With `ent_coef=0.01`, entropy regularization dominated the policy gradient (~1000×), keeping the policy locked near uniform allocation through 300k steps. Even with `ent_coef=0.001`, the hit rate variation across checkpoints (0.52–0.58) is modest, suggesting the policy has only weakly learned to differentiate asset bets.
+
+### 9.3 Evaluation and Model Selection
+
+9. **Validation window regime bias:** The current 2023 validation window was an unusually strong bull year for tech/growth stocks (+24% S&P, higher for concentrated portfolios). Any near-equal-weight allocation of these 30 tickers achieves val Sharpe ~1.7–1.8 regardless of skill. Model selection on this window selects checkpoints that happen to be closest to equal-weight, not those with the best differentiation signal.
+10. **Absolute Sharpe as selection criterion:** The composite score `val_sharpe − 0.3 × |val_max_drawdown|` penalizes drawdown but does not control for market beta. A better selection criterion would be `val_sharpe − baseline_sharpe` (excess Sharpe over equal-weight), which directly measures whether the policy adds value beyond naive diversification.
+12. **Single seed:** All results are from seed 42. Variance across random initialisations is unknown.
+
+### 9.4 Architecture
+
+13. **Flat observation vs. structured input:** The environment exposes a flat 2,223-dimensional `Box` for SB3 compatibility. The policy reshapes it internally, but this means the environment's observation space cannot be used directly for debugging or alternative policy implementations without understanding the internal reshape logic.
+14. **Global portfolio state only captures short-term dynamics:** The three global state variables (20-day portfolio vol, steps since episode start, cumulative episode return) have no memory beyond 20 days. The policy cannot condition on longer-term regime state (e.g., bear vs. bull market phase) except indirectly through the standardized feature values.
 
 ---
 
 ## 10. Example Results
 
-From run `20260510_234839` (300K steps; trained before the default train window was extended to start in 2018—re-run to compare on the same split):
+All runs: train 2019-01-03 → 2022-12-30 (1,007 days), val 2023 (250 days), test 2024-01-02 → 2025-12-31 (502 days). Config: `ent_coef=0.001`, `target_kl=0.15`, `lr=3e-4 → 1e-5` linear decay, `max_grad_norm=0.3`, composite model selection (`val_sharpe − 0.3 × |val_max_drawdown|`).
+
+### Run A — 300k steps (`20260511_023358`, ~8 min)
 
 | Metric | RL Agent | Equal-Weight |
 |--------|----------|--------------|
-| Test Return | +90.9% | +50.6% |
-| Test Sharpe | 1.31 | 1.00 |
-| Test Hit Rate | 52.7% | 53.8% |
-| Max Drawdown | -22.8% | -26.3% |
+| Test Return | +45.8% | +46.3% |
+| Test Sharpe | 0.953 | 0.963 |
+| Test Hit Rate | 53.9% | 54.1% |
+| Max Drawdown | −26.4% | −26.3% |
+| Best Val Score | 1.766 (at t=25k) | — |
 
-Best validation Sharpe achieved: 1.37
+Policy nearly identical to equal-weight. Val Sharpe stable across all checkpoints (~1.76–1.83), val hit rate locked at 0.554. Policy did not differentiate assets meaningfully at this training budget.
+
+---
+
+### Run B — 5M steps (`20260511_031334`, 77 min)
+
+| Metric | RL Agent | Equal-Weight |
+|--------|----------|--------------|
+| Test Return | **−12.9%** | +46.3% |
+| Test Sharpe | **−0.165** | 0.963 |
+| Test Hit Rate | 52.1% | 54.1% |
+| Max Drawdown | −28.9% | −26.3% |
+| Best Val Score | 2.028 (at t=1.175M) | — |
+| Training time | 77 min | — |
+
+**Key observations:**
+
+1. **Val Sharpe peaked at ~2.12 around t=1.175M then declined steadily** — the policy learned something useful in the first million steps (val score climbed from 1.3 to 2.12), then degraded. The selected checkpoint had val return +80% and val Sharpe 2.12 but this did not generalise to the 2024–2025 test period.
+
+2. **Entropy explosion** — `train/entropy_loss` rose from ~73 at t=0 to 4,000–9,000+ by t=5M. The Dirichlet concentration parameters drifted to extreme values that maximised 2023 performance at the cost of generalisation. Linear LR decay with floor 1e-5 slowed but did not prevent this.
+
+3. **Val hit rate varied (0.54–0.58)** — unlike 300k runs where hit rate was static, the 5M policy made real asset-level bets. Those bets worked on 2023 val but reversed on 2024–2025 test.
+
+4. **Overfitting to the 2023 bull regime** — 2023 was a strong bull year for tech/growth. The selected checkpoint concentrated on the positions optimal for that regime, which underperformed severely in the 2025 sell-off (April 2025 tariff crash, late-2025 correction). The equity curve ends at ~0.87 vs equal-weight at ~1.46.
+
+5. **The 5M run is worse than 300k on test** — more training made the model confidently wrong rather than uncertain and close-to-equal-weight. This is a clear case of regime-specific overfitting driven by the single 2023 val window.
+
+**Implication:** The composite `val_sharpe − 0.3×|max_drawdown|` selection criterion with a single 2023 bull-year window is insufficient to prevent regime overfitting at 5M steps. Walk-forward validation or excess-Sharpe selection (RL vs baseline on val) is a prerequisite before extended training is productive.
+
+---
+
+## 11. Future Work
+
+### 11.1 Training Scale and Stability
+
+1. **Fix model selection before scaling further:** A 5M-step run (`20260511_031334`) produced a policy that aggressively underperformed equal-weight on test (−12.9% vs +46.3%), despite a val score of 2.028. More training makes the model *confidently wrong* when the val window is a single bull year. The priority is excess-Sharpe or walk-forward selection **before** running more than 1M steps.
+2. **Analytical KL for Dirichlet:** Replace PPO's approximate KL formula (designed for Gaussian policies) with the exact closed-form KL divergence between two Dirichlet distributions. This would make `target_kl` a principled quantity and remove the need for empirical threshold tuning.
+3. **Cyclical or cosine LR annealing:** Linear decay with a floor prevents late-stage explosion but suppresses learning in the second half of training. Cosine annealing with warm restarts could periodically re-raise the LR to escape local optima while still decaying toward fine-tuning behavior near convergence.
+4. **Population-based training (PBT):** Automatically tune `ent_coef`, `learning_rate`, and `target_kl` across parallel runs, replacing the current manual trial-and-error schedule of hyperparameter changes.
+
+### 11.2 Reward and Objective Design
+
+5. **Excess Sharpe reward:** Replace `log(1 + portfolio_return)` with `log(1 + portfolio_return) − log(1 + equal_weight_return)`, i.e., reward the agent for beating the equal-weight baseline each step, not just for absolute returns. This directly aligns the training objective with the evaluation criterion.
+6. **Sortino ratio as validation metric:** Once the val window is extended beyond one year, switch the primary model selection metric from Sharpe to Sortino ratio (penalises only downside volatility), which is more appropriate for a risk-managed portfolio objective.
+7. **Calmar ratio in composite score:** Replace or supplement the current `sharpe − 0.3 × |max_drawdown|` composite with the Calmar ratio `annualised_return / |max_drawdown|`, which is the standard institutional metric for drawdown-adjusted performance.
+8. **ICVaR reward tuning:** The `--reward-mode icvar` variant is implemented but untested against the simple mode on the current architecture. A systematic comparison using the 2019–2022 bear-market period in training may reveal whether CVaR penalisation improves out-of-sample drawdown without sacrificing return.
+
+### 11.3 Model Selection and Evaluation
+
+9. **Excess Sharpe model selection:** Replace the absolute composite score with `val_sharpe − val_equal_weight_sharpe` as the primary checkpoint selection criterion. This directly measures skill over the baseline and is immune to bull-market inflation of the validation window.
+10. **Walk-forward validation:** Instead of a fixed 2023 validation window, use rolling 6-month windows across 2021–2023, selecting the checkpoint that maximises average excess Sharpe across windows. This reduces regime-specific overfitting in model selection.
+11. **Multi-seed evaluation:** Report mean ± standard deviation across at least 3 random seeds. Current results are from seed 42 only; variance is unknown and the best checkpoint may reflect favourable initialisation rather than learned policy quality.
+12. **Benchmark expansion:** Add momentum (12-1 month) and minimum-variance portfolios as additional baselines alongside equal-weight. These are standard factor-based alternatives that a data-driven RL policy should outperform to demonstrate value.
+
+### 11.4 Architecture Improvements
+
+13. **Structured observation space:** Replace the flat 2,223-dim Box with a dict observation space keyed by `asset_features (30, 73)`, `prev_weights (30,)`, and `portfolio_state (3,)`. This would allow the environment and policy to evolve independently and make debugging observation contents straightforward.
+14. **Richer temporal context:** Add a recurrent layer (e.g., GRU per asset) before the cross-asset Transformer to encode asset-level momentum over a 20-day lookback, replacing the current stateless per-step encoding. The environment already stores `_returns` as a list; this history could be exposed in the observation.
+15. **Separate news architecture:** The current policy projects news PCA columns through the shared scalar encoder. A dedicated news cross-attention branch (attending over the 32 PCA dims per asset, then mixing across assets) could better capture cross-company news co-movement (e.g., sector-wide sentiment shocks).
+16. **Larger universe:** Extending from 30 to 100–500 assets would test the cross-asset Transformer's scalability and provide more diversification opportunity for the policy to exploit. The permutation equivariance property of the architecture already supports variable-length asset lists.
+
+### 11.5 Production Readiness
+
+17. **Periodic retraining:** The current model is trained once on a fixed historical window. A production deployment would require scheduled retraining as new price, fundamental, and news data arrives, along with a data freshness check before each rollout.
+18. **Transaction cost modelling:** The current 5bp per unit turnover cost is a simplification. Realistic costs depend on asset liquidity, trade size, and market impact. Incorporating a realistic execution cost model (e.g., square-root impact law) would improve live-trading alignment.
+19. **Risk constraints:** The 25% max-weight cap is the only hard constraint. Production portfolios typically require sector exposure limits, factor neutrality, and tracking error bounds, none of which are currently enforced.
 
 ---
 

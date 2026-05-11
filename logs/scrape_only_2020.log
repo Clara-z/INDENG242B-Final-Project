@@ -18,3 +18,56 @@
 2026-05-11 00:14:11,413 | WARNING | GDELT status=429. Sleeping 15.6s then retry/skip. query="Apple Inc." sourcelang:english
 2026-05-11 00:15:08,438 | INFO | Ticker AAPL done. months_processed=13 kept_articles=383
 2026-05-11 00:15:31,154 | WARNING | GDELT status=429. Sleeping 15.7s then retry/skip. query="American Airlines Group Inc." sourcelang:english
+2026-05-11 11:42:24,965 | INFO | Ticker filter loaded from tickers.txt: requested=30, selected=30, missing_in_config=0
+2026-05-11 11:42:24,966 | INFO | Starting scraping-only pipeline year=2020
+2026-05-11 11:42:24,966 | INFO | Config=RuntimeConfig(year=2020, output_dir='data', log_dir='logs', universe_path='data/universe.json', tickers_file='tickers.txt', overwrite=True, max_articles_per_month=30, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=0, gdelt_maxrecords=250, gdelt_timeout=15, gdelt_retries=3, gdelt_sleep=0.05, min_request_interval=8.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, gdelt_domain_filter='', article_timeout=8, article_retries=1, article_workers=8, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, guardian_api_key='test', guardian_timeout=10, guardian_retries=1, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-11 11:42:24,966 | INFO | Companies selected=30
+2026-05-11 11:42:24,966 | INFO | Ticker source file=tickers.txt
+2026-05-11 11:42:24,966 | INFO | Window days=30
+2026-05-11 11:42:24,966 | INFO | Max windows per ticker=0
+2026-05-11 11:42:24,966 | INFO | Effective min_request_interval=8.0 seconds
+2026-05-11 11:42:30,684 | WARNING | GDELT status=429. Sleeping 8.1s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:42:44,799 | WARNING | GDELT status=429. Sleeping 16.6s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:43:06,310 | WARNING | GDELT status=429. Sleeping 25.0s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:43:35,628 | WARNING | GDELT status=429. Sleeping 32.2s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:44:12,922 | WARNING | GDELT status=429. Sleeping 8.6s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:44:52,568 | INFO | Ticker AAPL fallback split window 2020-01-01 -> 2020-01-31 got 500 articles
+2026-05-11 11:45:28,463 | WARNING | GDELT status=429. Sleeping 8.8s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:45:43,579 | WARNING | GDELT status=429. Sleeping 16.0s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:46:05,498 | WARNING | GDELT status=429. Sleeping 24.8s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:46:55,574 | WARNING | GDELT status=429. Sleeping 9.0s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:47:26,573 | WARNING | GDELT status=429. Sleeping 8.5s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:47:40,107 | WARNING | GDELT status=429. Sleeping 16.9s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:48:01,680 | WARNING | GDELT status=429. Sleeping 24.8s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:48:47,549 | WARNING | GDELT status=429. Sleeping 8.4s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:49:00,666 | WARNING | GDELT status=429. Sleeping 16.2s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:49:21,145 | WARNING | GDELT status=429. Sleeping 24.3s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:49:48,857 | WARNING | GDELT status=429. Sleeping 32.6s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:50:27,952 | WARNING | GDELT status=429. Sleeping 8.4s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:50:44,494 | WARNING | GDELT status=429. Sleeping 16.8s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:51:11,177 | WARNING | GDELT status=429. Sleeping 24.2s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:51:44,537 | WARNING | GDELT status=429. Sleeping 32.9s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:52:30,943 | INFO | Ticker AAPL fallback split window 2020-05-30 -> 2020-06-29 got 250 articles
+2026-05-11 11:52:49,205 | WARNING | GDELT status=429. Sleeping 8.1s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:53:03,554 | WARNING | GDELT status=429. Sleeping 16.1s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:53:24,505 | WARNING | GDELT status=429. Sleeping 24.2s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:53:52,007 | WARNING | GDELT status=429. Sleeping 32.7s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:54:40,936 | WARNING | GDELT status=429. Sleeping 8.4s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:54:52,259 | WARNING | GDELT status=429. Sleeping 16.3s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:55:16,389 | INFO | Ticker AAPL fallback split window 2020-06-29 -> 2020-07-29 got 500 articles
+2026-05-11 11:55:52,254 | WARNING | GDELT status=429. Sleeping 8.7s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:56:05,642 | WARNING | GDELT status=429. Sleeping 17.0s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:56:25,249 | WARNING | GDELT status=429. Sleeping 24.1s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:56:52,415 | WARNING | GDELT status=429. Sleeping 32.3s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:57:26,864 | WARNING | GDELT status=429. Sleeping 8.7s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:57:37,704 | WARNING | GDELT status=429. Sleeping 17.0s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:57:56,770 | WARNING | GDELT status=429. Sleeping 24.6s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:58:22,590 | WARNING | GDELT status=429. Sleeping 32.8s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:58:57,561 | WARNING | GDELT status=429. Sleeping 8.5s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:59:11,845 | INFO | Ticker AAPL fallback split window 2020-08-28 -> 2020-09-27 got 250 articles
+2026-05-11 11:59:42,008 | WARNING | GDELT status=429. Sleeping 8.5s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 11:59:52,645 | WARNING | GDELT status=429. Sleeping 16.8s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 12:00:46,201 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Read timed out. (read timeout=15). Retry/skip.
+2026-05-11 12:00:55,131 | WARNING | GDELT status=429. Sleeping 16.7s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 12:01:17,868 | WARNING | GDELT status=429. Sleeping 24.7s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 12:01:52,690 | WARNING | GDELT status=429. Sleeping 32.3s then retry/skip. query="Apple Inc." sourcelang:english
