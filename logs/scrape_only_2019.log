@@ -1,0 +1,28 @@
+2026-05-10 19:01:19,043 | INFO | Ticker filter loaded from tickers.txt: requested=30, selected=30, missing_in_config=0
+2026-05-10 19:01:19,044 | INFO | Starting scraping-only pipeline year=2019
+2026-05-10 19:01:19,044 | INFO | Config=RuntimeConfig(year=2019, output_dir='data', log_dir='logs', universe_path='data/universe.json', tickers_file='tickers.txt', overwrite=True, max_articles_per_month=30, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=0, gdelt_maxrecords=250, gdelt_timeout=15, gdelt_retries=3, gdelt_sleep=0.05, min_request_interval=8.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, gdelt_domain_filter='', article_timeout=8, article_retries=1, article_workers=8, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, guardian_api_key='test', guardian_timeout=10, guardian_retries=1, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 19:01:19,044 | INFO | Companies selected=30
+2026-05-10 19:01:19,044 | INFO | Ticker source file=tickers.txt
+2026-05-10 19:01:19,044 | INFO | Window days=30
+2026-05-10 19:01:19,044 | INFO | Max windows per ticker=0
+2026-05-10 19:01:19,044 | INFO | Effective min_request_interval=8.0 seconds
+2026-05-10 19:01:34,132 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%22Apple+Inc.%22+sourcelang%3Aenglish&mode=artl. Retry/skip.
+2026-05-10 19:02:16,878 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%22Apple+Inc.%22+sourcelang%3Aenglish&mode=artl. Retry/skip.
+2026-05-10 19:02:26,223 | WARNING | GDELT status=429. Sleeping 16.5s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-10 19:02:50,102 | WARNING | GDELT status=429. Sleeping 24.9s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-10 19:03:42,009 | WARNING | GDELT status=429. Sleeping 8.7s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-10 19:04:04,275 | WARNING | GDELT status=429. Sleeping 16.8s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-10 19:05:12,029 | INFO | Ticker filter loaded from tickers.txt: requested=30, selected=30, missing_in_config=0
+2026-05-10 19:05:12,030 | INFO | Starting scraping-only pipeline year=2019
+2026-05-10 19:05:12,030 | INFO | Config=RuntimeConfig(year=2019, output_dir='data', log_dir='logs', universe_path='data/universe.json', tickers_file='tickers.txt', overwrite=True, max_articles_per_month=30, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=0, gdelt_maxrecords=250, gdelt_timeout=15, gdelt_retries=3, gdelt_sleep=0.05, min_request_interval=8.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, gdelt_domain_filter='', article_timeout=8, article_retries=1, article_workers=8, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, guardian_api_key='test', guardian_timeout=10, guardian_retries=1, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-10 19:05:12,030 | INFO | Companies selected=30
+2026-05-10 19:05:12,030 | INFO | Ticker source file=tickers.txt
+2026-05-10 19:05:12,030 | INFO | Window days=30
+2026-05-10 19:05:12,030 | INFO | Max windows per ticker=0
+2026-05-10 19:05:12,030 | INFO | Effective min_request_interval=8.0 seconds
+2026-05-10 19:05:17,917 | WARNING | GDELT status=429. Sleeping 8.2s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-10 19:05:34,259 | WARNING | GDELT status=429. Sleeping 16.4s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-10 19:05:57,235 | WARNING | GDELT status=429. Sleeping 25.0s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-10 19:06:30,702 | WARNING | GDELT status=429. Sleeping 32.2s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-10 19:07:52,736 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%22Apple+Inc.%22+sourcelang%3Aenglish&mode=artl. Retry/skip.
+2026-05-10 19:08:10,061 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%22Apple+Inc.%22+sourcelang%3Aenglish&mode=artl. Retry/skip.

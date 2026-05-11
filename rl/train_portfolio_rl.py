@@ -431,6 +431,37 @@ def evaluate_equal_weight(env: Any) -> dict[str, Any]:
     return terminal_info
 
 
+def build_test_daily_dataframe(test_info: dict[str, Any]) -> pd.DataFrame:
+    """Create a length-safe daily test table from terminal episode info."""
+    dates = list(test_info.get("dates", []))
+    daily_returns = list(test_info.get("daily_returns", []))
+    equity_curve = list(test_info.get("equity_curve", []))
+
+    # Expected shape from env: len(dates) == len(equity_curve) == len(daily_returns) + 1.
+    if len(dates) == len(equity_curve) and len(daily_returns) + 1 == len(dates):
+        export_dates = dates[1:]
+        export_equity = equity_curve[1:]
+        return pd.DataFrame(
+            {
+                "date": export_dates,
+                "rl_daily_return": daily_returns,
+                "rl_equity": export_equity,
+            }
+        )
+
+    # Defensive fallback if future env changes alter list lengths.
+    min_len = min(len(dates), len(daily_returns), max(0, len(equity_curve) - 1))
+    if min_len == 0:
+        return pd.DataFrame(columns=["date", "rl_daily_return", "rl_equity"])
+    return pd.DataFrame(
+        {
+            "date": dates[:min_len],
+            "rl_daily_return": daily_returns[:min_len],
+            "rl_equity": equity_curve[1 : min_len + 1],
+        }
+    )
+
+
 def write_plots(run_dir: Path, train_df: pd.DataFrame, val_df: pd.DataFrame, test_info: dict, base_info: dict) -> None:
     plot_dir = run_dir / "plots"
     plot_dir.mkdir(parents=True, exist_ok=True)
@@ -626,13 +657,7 @@ def main() -> None:
     train_df.to_csv(metrics_dir / "train_metrics.csv", index=False)
     val_df.to_csv(metrics_dir / "val_metrics.csv", index=False)
 
-    test_daily = pd.DataFrame(
-        {
-            "date": test_info.get("dates", []),
-            "rl_daily_return": test_info.get("daily_returns", []),
-            "rl_equity": test_info.get("equity_curve", [])[1:],
-        }
-    )
+    test_daily = build_test_daily_dataframe(test_info)
     test_daily.to_csv(metrics_dir / "test_daily_returns.csv", index=False)
 
     summary = {

@@ -1,6 +1,35 @@
 {
   "tickers": [
-    "AAPL"
+    "AAPL",
+    "AAL",
+    "ABEO",
+    "ACAD",
+    "ACGL",
+    "ACHC",
+    "ACHV",
+    "ACLS",
+    "ACMR",
+    "ACRS",
+    "ADBE",
+    "ADI",
+    "ADMA",
+    "ADP",
+    "ADSK",
+    "AEHR",
+    "AEIS",
+    "AEP",
+    "CCO",
+    "CCRN",
+    "CCS",
+    "TSLA",
+    "NFLX",
+    "MSFT",
+    "META",
+    "GOOGL",
+    "AMZN",
+    "AGNC",
+    "AKBA",
+    "AMC"
   ],
   "companies": [
     {
@@ -15,6 +44,311 @@
         "Tim Cook",
         "Apple Inc.",
         "AAPL"
+      ]
+    },
+    {
+      "ticker": "AAL",
+      "company_name": "American Airlines Group Inc.",
+      "entity_match_patterns": [
+        "American Airlines Group",
+        "American Airlines",
+        "AAL",
+        "American Airlines Group Inc."
+      ]
+    },
+    {
+      "ticker": "ABEO",
+      "company_name": "Abeona Therapeutics Inc.",
+      "entity_match_patterns": [
+        "Abeona Therapeutics",
+        "Abeona",
+        "ABEO",
+        "Abeona Therapeutics Inc."
+      ]
+    },
+    {
+      "ticker": "ACAD",
+      "company_name": "ACADIA Pharmaceuticals Inc.",
+      "entity_match_patterns": [
+        "ACADIA Pharmaceuticals",
+        "ACAD",
+        "Nuplazid",
+        "ACADIA Pharmaceuticals Inc."
+      ]
+    },
+    {
+      "ticker": "ACGL",
+      "company_name": "Arch Capital Group Ltd.",
+      "entity_match_patterns": [
+        "Arch Capital Group",
+        "Arch Capital",
+        "ACGL",
+        "Arch Capital Group Ltd."
+      ]
+    },
+    {
+      "ticker": "ACHC",
+      "company_name": "Acadia Healthcare Company Inc.",
+      "entity_match_patterns": [
+        "Acadia Healthcare Company",
+        "Acadia Healthcare",
+        "ACHC",
+        "Acadia Healthcare Company Inc."
+      ]
+    },
+    {
+      "ticker": "ACHV",
+      "company_name": "Achieve Life Sciences Inc.",
+      "entity_match_patterns": [
+        "Achieve Life Sciences",
+        "ACHV",
+        "cytisinicline",
+        "Achieve Life Sciences Inc."
+      ]
+    },
+    {
+      "ticker": "ACLS",
+      "company_name": "Axcelis Technologies Inc.",
+      "entity_match_patterns": [
+        "Axcelis Technologies",
+        "Axcelis",
+        "ACLS",
+        "Axcelis Technologies Inc."
+      ]
+    },
+    {
+      "ticker": "ACMR",
+      "company_name": "ACM Research Inc.",
+      "entity_match_patterns": [
+        "ACM Research Inc",
+        "ACM Research",
+        "ACMR",
+        "ACM Research Inc."
+      ]
+    },
+    {
+      "ticker": "ACRS",
+      "company_name": "Aclaris Therapeutics Inc.",
+      "entity_match_patterns": [
+        "Aclaris Therapeutics",
+        "Aclaris",
+        "ACRS",
+        "Aclaris Therapeutics Inc."
+      ]
+    },
+    {
+      "ticker": "ADBE",
+      "company_name": "Adobe Inc.",
+      "entity_match_patterns": [
+        "Adobe Inc",
+        "Adobe",
+        "Adobe Systems",
+        "Creative Cloud",
+        "Adobe Firefly",
+        "Shantanu Narayen",
+        "Adobe Inc.",
+        "ADBE"
+      ]
+    },
+    {
+      "ticker": "ADI",
+      "company_name": "Analog Devices Inc.",
+      "entity_match_patterns": [
+        "Analog Devices Inc",
+        "Analog Devices",
+        "ADI",
+        "Analog Devices Inc."
+      ]
+    },
+    {
+      "ticker": "ADMA",
+      "company_name": "ADMA Biologics Inc.",
+      "entity_match_patterns": [
+        "ADMA Biologics",
+        "ADMA",
+        "ADMA Biologics Inc."
+      ]
+    },
+    {
+      "ticker": "ADP",
+      "company_name": "Automatic Data Processing Inc.",
+      "entity_match_patterns": [
+        "Automatic Data Processing",
+        "ADP",
+        "Automatic Data Processing Inc."
+      ]
+    },
+    {
+      "ticker": "ADSK",
+      "company_name": "Autodesk Inc.",
+      "entity_match_patterns": [
+        "Autodesk Inc",
+        "Autodesk",
+        "ADSK",
+        "AutoCAD",
+        "Autodesk Inc."
+      ]
+    },
+    {
+      "ticker": "AEHR",
+      "company_name": "Aehr Test Systems",
+      "entity_match_patterns": [
+        "Aehr Test Systems",
+        "Aehr"
+      ]
+    },
+    {
+      "ticker": "AEIS",
+      "company_name": "Advanced Energy Industries Inc.",
+      "entity_match_patterns": [
+        "Advanced Energy Industries",
+        "AEIS",
+        "Advanced Energy Industries Inc."
+      ]
+    },
+    {
+      "ticker": "AEP",
+      "company_name": "American Electric Power Company Inc.",
+      "entity_match_patterns": [
+        "American Electric Power Company",
+        "American Electric Power",
+        "AEP",
+        "American Electric Power Company Inc."
+      ]
+    },
+    {
+      "ticker": "CCO",
+      "company_name": "Clear Channel Outdoor Holdings Inc.",
+      "entity_match_patterns": [
+        "Clear Channel Outdoor Holdings",
+        "Clear Channel Outdoor",
+        "CCO",
+        "Clear Channel Outdoor Holdings Inc."
+      ]
+    },
+    {
+      "ticker": "CCRN",
+      "company_name": "Cross Country Healthcare Inc.",
+      "entity_match_patterns": [
+        "Cross Country Healthcare",
+        "CCRN",
+        "Cross Country Healthcare Inc."
+      ]
+    },
+    {
+      "ticker": "CCS",
+      "company_name": "Century Communities Inc.",
+      "entity_match_patterns": [
+        "Century Communities Inc",
+        "Century Communities",
+        "CCS",
+        "Century Communities Inc."
+      ]
+    },
+    {
+      "ticker": "TSLA",
+      "company_name": "Tesla Inc.",
+      "entity_match_patterns": [
+        "Tesla Inc",
+        "Tesla",
+        "TSLA",
+        "Model 3",
+        "Model Y",
+        "Elon Musk",
+        "Tesla Inc."
+      ]
+    },
+    {
+      "ticker": "NFLX",
+      "company_name": "Netflix Inc.",
+      "entity_match_patterns": [
+        "Netflix Inc",
+        "Netflix",
+        "NFLX",
+        "Reed Hastings",
+        "Ted Sarandos",
+        "Netflix Inc."
+      ]
+    },
+    {
+      "ticker": "MSFT",
+      "company_name": "Microsoft Corporation",
+      "entity_match_patterns": [
+        "Microsoft Corporation",
+        "Microsoft",
+        "MSFT",
+        "Azure",
+        "Satya Nadella"
+      ]
+    },
+    {
+      "ticker": "META",
+      "company_name": "Meta Platforms Inc.",
+      "entity_match_patterns": [
+        "Meta Platforms",
+        "Meta",
+        "Facebook",
+        "Instagram",
+        "Mark Zuckerberg",
+        "Meta Platforms Inc."
+      ]
+    },
+    {
+      "ticker": "GOOGL",
+      "company_name": "Alphabet Inc.",
+      "entity_match_patterns": [
+        "Alphabet Inc",
+        "Alphabet",
+        "Google",
+        "GOOGL",
+        "Sundar Pichai",
+        "Alphabet Inc."
+      ]
+    },
+    {
+      "ticker": "AMZN",
+      "company_name": "Amazon.com Inc.",
+      "entity_match_patterns": [
+        "Amazon.com Inc",
+        "Amazon.com",
+        "Amazon",
+        "Amazon Web Services",
+        "AWS",
+        "AMZN",
+        "Andy Jassy",
+        "Jeff Bezos",
+        "Amazon.com Inc."
+      ]
+    },
+    {
+      "ticker": "AGNC",
+      "company_name": "AGNC Investment Corp.",
+      "entity_match_patterns": [
+        "AGNC Investment Corp",
+        "AGNC Investment",
+        "AGNC",
+        "AGNC Investment Corp."
+      ]
+    },
+    {
+      "ticker": "AKBA",
+      "company_name": "Akebia Therapeutics Inc.",
+      "entity_match_patterns": [
+        "Akebia Therapeutics",
+        "AKBA",
+        "Akebia Therapeutics Inc."
+      ]
+    },
+    {
+      "ticker": "AMC",
+      "company_name": "AMC Entertainment Holdings Inc.",
+      "entity_match_patterns": [
+        "AMC Entertainment Holdings",
+        "AMC Entertainment",
+        "AMC Theatres",
+        "AMC",
+        "Adam Aron",
+        "AMC Entertainment Holdings Inc."
       ]
     }
   ]

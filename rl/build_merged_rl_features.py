@@ -20,19 +20,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--asset-path",
         type=Path,
-        default=Path("data/processed/asset_features.parquet"),
+        default=Path("data/asset_features.parquet"),
         help="Asset/fundamental features parquet.",
     )
     parser.add_argument(
         "--news-path",
         type=Path,
-        default=Path("data/processed/news_embeddings.parquet"),
+        default=Path("data/news_embeddings.parquet"),
         help="News parquet with PCA columns (news_pca_XX) and optional sentiment columns.",
     )
     parser.add_argument(
         "--output-path",
         type=Path,
-        default=Path("data/processed/rl_features_with_news_pca32.parquet"),
+        default=Path("data/rl_features_with_news_pca32.parquet"),
         help="Output merged parquet path.",
     )
     return parser.parse_args()

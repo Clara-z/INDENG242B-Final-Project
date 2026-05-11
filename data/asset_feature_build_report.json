@@ -1,0 +1,27 @@
+{
+  "source_csv": "data/fundamentals & technical features.csv",
+  "asset_out": "data/asset_features.parquet",
+  "prices_out": "data/prices.parquet",
+  "rows": 60930,
+  "tickers": 30,
+  "date_min": "2018-01-02",
+  "date_max": "2026-01-30",
+  "derived_columns": [
+    "ret_1d",
+    "ret_5d",
+    "ret_20d",
+    "ret_60d",
+    "ret_252d",
+    "vol_20d",
+    "vol_60d",
+    "price_to_ma20",
+    "price_to_ma50",
+    "rsi_14",
+    "macd_signal"
+  ],
+  "unavailable_columns": {
+    "volume_zscore_20d": "Source CSV has no volume column.",
+    "high_low_range_5d": "Source CSV has no high/low price columns.",
+    "gross_margin": "Source CSV does not include gross_margin fundamentals."
+  }
+}
