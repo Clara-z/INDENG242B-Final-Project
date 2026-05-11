@@ -1,0 +1,20 @@
+2026-05-11 00:03:28,180 | INFO | Ticker filter loaded from tickers.txt: requested=30, selected=30, missing_in_config=0
+2026-05-11 00:03:28,181 | INFO | Starting scraping-only pipeline year=2020
+2026-05-11 00:03:28,181 | INFO | Config=RuntimeConfig(year=2020, output_dir='data', log_dir='logs', universe_path='data/universe.json', tickers_file='tickers.txt', overwrite=True, max_articles_per_month=30, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=0, gdelt_maxrecords=250, gdelt_timeout=15, gdelt_retries=3, gdelt_sleep=0.05, min_request_interval=15.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, gdelt_domain_filter='', article_timeout=8, article_retries=1, article_workers=8, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, guardian_api_key='test', guardian_timeout=10, guardian_retries=1, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-11 00:03:28,181 | INFO | Companies selected=30
+2026-05-11 00:03:28,181 | INFO | Ticker source file=tickers.txt
+2026-05-11 00:03:28,181 | INFO | Window days=30
+2026-05-11 00:03:28,181 | INFO | Max windows per ticker=0
+2026-05-11 00:03:28,182 | INFO | Effective min_request_interval=15.0 seconds
+2026-05-11 00:04:36,264 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Read timed out. (read timeout=15). Retry/skip.
+2026-05-11 00:06:21,244 | WARNING | GDELT status=429. Sleeping 15.9s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 00:06:42,833 | WARNING | GDELT status=429. Sleeping 31.0s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 00:08:01,365 | WARNING | GDELT status=429. Sleeping 15.1s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 00:08:26,913 | WARNING | GDELT status=429. Sleeping 30.7s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 00:09:05,844 | WARNING | GDELT status=429. Sleeping 45.9s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 00:10:31,997 | WARNING | GDELT status=429. Sleeping 15.3s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 00:12:34,865 | WARNING | GDELT status=429. Sleeping 15.1s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 00:12:57,610 | WARNING | GDELT status=429. Sleeping 30.8s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 00:14:11,413 | WARNING | GDELT status=429. Sleeping 15.6s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 00:15:08,438 | INFO | Ticker AAPL done. months_processed=13 kept_articles=383
+2026-05-11 00:15:31,154 | WARNING | GDELT status=429. Sleeping 15.7s then retry/skip. query="American Airlines Group Inc." sourcelang:english

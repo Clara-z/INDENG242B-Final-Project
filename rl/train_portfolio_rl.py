@@ -3,7 +3,7 @@
 Train a portfolio RL agent from a prebuilt feature parquet.
 
 Expected input parquet:
-  data/processed/rl_features_with_news_pca32.parquet
+  data/rl_features_with_news_pca32.parquet
 
 The script trains PPO, evaluates on val/test windows, and writes:
   - model checkpoints
@@ -20,6 +20,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -47,7 +48,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--features-path",
         type=Path,
-        default=Path("data/processed/rl_features_with_news_pca32.parquet"),
+        default=Path("data/rl_features_with_news_pca32.parquet"),
         help="Path to merged feature parquet (price + fundamentals + PCA news).",
     )
     parser.add_argument(
@@ -56,7 +57,7 @@ def parse_args() -> argparse.Namespace:
         default=Path("results/rl_runs"),
         help="Root folder where run artifacts are written.",
     )
-    parser.add_argument("--train-start", type=str, default="2020-01-01")
+    parser.add_argument("--train-start", type=str, default="2018-01-01")
     parser.add_argument("--train-end", type=str, default="2023-06-30")
     parser.add_argument("--val-start", type=str, default="2023-07-01")
     parser.add_argument("--val-end", type=str, default="2023-12-31")
@@ -514,17 +515,23 @@ def write_plots(run_dir: Path, train_df: pd.DataFrame, val_df: pd.DataFrame, tes
     rl_eq = test_info.get("equity_curve", [])
     base_eq = base_info.get("equity_curve", [])
     if rl_dates and rl_eq and base_eq:
-        plt.figure(figsize=(10, 5))
-        plt.plot(rl_dates, rl_eq, label="RL Agent")
-        plt.plot(rl_dates[: len(base_eq)], base_eq, label="Equal Weight Baseline")
-        plt.xticks(rotation=45, ha="right")
-        plt.title("Test Equity Curve")
-        plt.xlabel("Date")
-        plt.ylabel("Portfolio Value")
-        plt.legend()
-        plt.tight_layout()
-        plt.savefig(plot_dir / "test_equity_curve.png", dpi=150)
-        plt.close()
+        fig, ax = plt.subplots(figsize=(10, 5))
+        rl_dates_dt = pd.to_datetime(rl_dates, errors="coerce")
+        ax.plot(rl_dates_dt, rl_eq, label="RL Agent")
+        ax.plot(rl_dates_dt[: len(base_eq)], base_eq, label="Equal Weight Baseline")
+
+        # Auto-thin date ticks so labels stay readable for long test windows.
+        locator = mdates.AutoDateLocator(minticks=6, maxticks=10)
+        ax.xaxis.set_major_locator(locator)
+        ax.xaxis.set_major_formatter(mdates.ConciseDateFormatter(locator))
+
+        ax.set_title("Test Equity Curve")
+        ax.set_xlabel("Date")
+        ax.set_ylabel("Portfolio Value")
+        ax.legend()
+        fig.tight_layout()
+        fig.savefig(plot_dir / "test_equity_curve.png", dpi=150)
+        plt.close(fig)
 
 
 def main() -> None:

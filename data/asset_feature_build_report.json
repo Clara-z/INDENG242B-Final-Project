@@ -14,14 +14,16 @@
     "ret_252d",
     "vol_20d",
     "vol_60d",
+    "volume_zscore_20d",
     "price_to_ma20",
     "price_to_ma50",
+    "high_low_range_5d",
     "rsi_14",
     "macd_signal"
   ],
   "unavailable_columns": {
-    "volume_zscore_20d": "Source CSV has no volume column.",
+    "duplicate_sector_columns": "Dropped 64 duplicated sector columns with .N suffix.",
     "high_low_range_5d": "Source CSV has no high/low price columns.",
-    "gross_margin": "Source CSV does not include gross_margin fundamentals."
+    "gross_margin": "Excluded by request due to high missingness."
   }
 }

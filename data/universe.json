@@ -18,6 +18,9 @@
     "AEHR",
     "AEIS",
     "AEP",
+    "AGNC",
+    "AKBA",
+    "AMC",
     "CCO",
     "CCRN",
     "CCS",
@@ -26,10 +29,7 @@
     "MSFT",
     "META",
     "GOOGL",
-    "AMZN",
-    "AGNC",
-    "AKBA",
-    "AMC"
+    "AMZN"
   ],
   "companies": [
     {
@@ -217,6 +217,37 @@
       ]
     },
     {
+      "ticker": "AGNC",
+      "company_name": "AGNC Investment Corp.",
+      "entity_match_patterns": [
+        "AGNC Investment Corp",
+        "AGNC Investment",
+        "AGNC",
+        "AGNC Investment Corp."
+      ]
+    },
+    {
+      "ticker": "AKBA",
+      "company_name": "Akebia Therapeutics Inc.",
+      "entity_match_patterns": [
+        "Akebia Therapeutics",
+        "AKBA",
+        "Akebia Therapeutics Inc."
+      ]
+    },
+    {
+      "ticker": "AMC",
+      "company_name": "AMC Entertainment Holdings Inc.",
+      "entity_match_patterns": [
+        "AMC Entertainment Holdings",
+        "AMC Entertainment",
+        "AMC Theatres",
+        "AMC",
+        "Adam Aron",
+        "AMC Entertainment Holdings Inc."
+      ]
+    },
+    {
       "ticker": "CCO",
       "company_name": "Clear Channel Outdoor Holdings Inc.",
       "entity_match_patterns": [
@@ -318,37 +349,6 @@
         "Andy Jassy",
         "Jeff Bezos",
         "Amazon.com Inc."
-      ]
-    },
-    {
-      "ticker": "AGNC",
-      "company_name": "AGNC Investment Corp.",
-      "entity_match_patterns": [
-        "AGNC Investment Corp",
-        "AGNC Investment",
-        "AGNC",
-        "AGNC Investment Corp."
-      ]
-    },
-    {
-      "ticker": "AKBA",
-      "company_name": "Akebia Therapeutics Inc.",
-      "entity_match_patterns": [
-        "Akebia Therapeutics",
-        "AKBA",
-        "Akebia Therapeutics Inc."
-      ]
-    },
-    {
-      "ticker": "AMC",
-      "company_name": "AMC Entertainment Holdings Inc.",
-      "entity_match_patterns": [
-        "AMC Entertainment Holdings",
-        "AMC Entertainment",
-        "AMC Theatres",
-        "AMC",
-        "Adam Aron",
-        "AMC Entertainment Holdings Inc."
       ]
     }
   ]

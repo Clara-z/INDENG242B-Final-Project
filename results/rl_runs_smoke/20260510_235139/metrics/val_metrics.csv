@@ -1,0 +1,2 @@
+num_timesteps,val_return,val_sharpe,val_hit_rate,val_max_drawdown
+2048.0,-0.02174207084111368,-0.08930805587468643,0.504,-0.26158437711446736
