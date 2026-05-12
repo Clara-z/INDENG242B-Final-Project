@@ -71,3 +71,17 @@
 2026-05-11 12:00:55,131 | WARNING | GDELT status=429. Sleeping 16.7s then retry/skip. query="Apple Inc." sourcelang:english
 2026-05-11 12:01:17,868 | WARNING | GDELT status=429. Sleeping 24.7s then retry/skip. query="Apple Inc." sourcelang:english
 2026-05-11 12:01:52,690 | WARNING | GDELT status=429. Sleeping 32.3s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 12:16:23,824 | INFO | Ticker filter loaded from tickers.txt: requested=30, selected=30, missing_in_config=0
+2026-05-11 12:16:23,825 | INFO | Starting scraping-only pipeline year=2020
+2026-05-11 12:16:23,825 | INFO | Config=RuntimeConfig(year=2020, output_dir='data', log_dir='logs', universe_path='data/universe.json', tickers_file='tickers.txt', overwrite=True, max_articles_per_month=30, max_articles_per_ticker_year=0, window_days=30, max_windows_per_ticker=0, gdelt_maxrecords=250, gdelt_timeout=15, gdelt_retries=3, gdelt_sleep=0.05, min_request_interval=8.0, sort='hybridrel', gdelt_backoff_base=2.0, gdelt_max_backoff=90.0, gdelt_domain_filter='', article_timeout=8, article_retries=1, article_workers=8, min_body_chars=50, save_failed_body_snippet=False, skip_fulltext=False, guardian_api_key='test', guardian_timeout=10, guardian_retries=1, max_runtime_minutes=0.0, stop_before_deadline_seconds=60)
+2026-05-11 12:16:23,825 | INFO | Companies selected=30
+2026-05-11 12:16:23,825 | INFO | Ticker source file=tickers.txt
+2026-05-11 12:16:23,825 | INFO | Window days=30
+2026-05-11 12:16:23,825 | INFO | Max windows per ticker=0
+2026-05-11 12:16:23,825 | INFO | Effective min_request_interval=8.0 seconds
+2026-05-11 12:17:39,739 | WARNING | GDELT status=429. Sleeping 8.2s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 12:18:22,021 | WARNING | GDELT status=429. Sleeping 8.4s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 12:18:37,689 | WARNING | GDELT status=429. Sleeping 16.5s then retry/skip. query="Apple Inc." sourcelang:english
+2026-05-11 12:19:23,280 | WARNING | GDELT request failed: ('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer')). Retry/skip.
+2026-05-11 12:19:25,996 | WARNING | GDELT request failed: ('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer')). Retry/skip.
+2026-05-11 12:20:35,904 | WARNING | GDELT request failed: HTTPSConnectionPool(host='api.gdeltproject.org', port=443): Max retries exceeded with url: /api/v2/doc/doc?query=%22Apple+Inc.%22+sourcelang%3Aenglish&mode=artl. Retry/skip.

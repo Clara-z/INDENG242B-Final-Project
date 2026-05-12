@@ -11,6 +11,6 @@ then start training:
 source venv/bin/activate
 python rl/train_portfolio_rl.py \
   --features-path data/rl_features_with_news_pca32.parquet \
-  --total-timesteps 300000 \
+  --total-timesteps 500000 \
   --eval-freq 25000 \
   --episode-length 252

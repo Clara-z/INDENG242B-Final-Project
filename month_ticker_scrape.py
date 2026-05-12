@@ -945,10 +945,9 @@ def _derive_guardian_fields(web_url: str) -> Dict[str, Optional[str]]:
     }
 
 
-def export_sample_style_json(article_df: pd.DataFrame, cfg: RuntimeConfig) -> str:
-    out_path = os.path.join(cfg.output_dir, f"sample_guardian_news_{cfg.year}.json")
+def _build_json_records_from_df(article_df: pd.DataFrame, cfg: RuntimeConfig) -> List[Dict]:
+    """Convert an article DataFrame to the list of JSON records expected by FinBERT pipeline."""
     rows: List[Dict] = []
-
     for _, row in article_df.iterrows():
         web_url = clean_text(row.get("url"))
         title = clean_text(row.get("title"))
@@ -966,43 +965,225 @@ def export_sample_style_json(article_df: pd.DataFrame, cfg: RuntimeConfig) -> st
         if not isinstance(tags, list):
             tags = []
 
-        rows.append(
-            {
-                "uid": row.get("article_id"),
-                "ticker": row.get("ticker"),
-                "webPublicationDate": web_pub_dt,
-                "publication_date": _to_date_str(row.get("gdelt_timestamp_utc")),
-                "trading_date": None,
-                "guardian_id": row.get("guardian_id") or derived["guardian_id"],
-                "type": row.get("type") or "article",
-                "sectionId": row.get("sectionId") or derived["sectionId"],
-                "sectionName": row.get("sectionName") or derived["sectionName"],
-                "pillarId": row.get("pillarId"),
-                "pillarName": row.get("pillarName"),
-                "webTitle": clean_text(row.get("webTitle")) or title,
-                "webUrl": web_url,
-                "apiUrl": row.get("apiUrl") or derived["apiUrl"],
-                "headline": headline,
-                "trailText": trail_text,
-                "bodyText": body_text,
-                "text_for_finbert": text_for_finbert,
-                "wordcount": wc,
-                "guardian_tone": row.get("guardian_tone"),
-                "tags": tags,
-                "query": row.get("gdelt_query", ""),
-                "from_date_window": from_date_window,
-                "to_date_window": to_date_window,
-                "source": row.get("source") or derived["source"],
-                "backfill": True,
-                "backfill_order_by": cfg.sort,
-            }
-        )
+        rows.append({
+            "uid": row.get("article_id"),
+            "ticker": row.get("ticker"),
+            "webPublicationDate": web_pub_dt,
+            "publication_date": _to_date_str(row.get("gdelt_timestamp_utc")),
+            "trading_date": None,
+            "guardian_id": row.get("guardian_id") or derived["guardian_id"],
+            "type": row.get("type") or "article",
+            "sectionId": row.get("sectionId") or derived["sectionId"],
+            "sectionName": row.get("sectionName") or derived["sectionName"],
+            "pillarId": row.get("pillarId"),
+            "pillarName": row.get("pillarName"),
+            "webTitle": clean_text(row.get("webTitle")) or title,
+            "webUrl": web_url,
+            "apiUrl": row.get("apiUrl") or derived["apiUrl"],
+            "headline": headline,
+            "trailText": trail_text,
+            "bodyText": body_text,
+            "text_for_finbert": text_for_finbert,
+            "wordcount": wc,
+            "guardian_tone": row.get("guardian_tone"),
+            "tags": tags,
+            "query": row.get("gdelt_query", ""),
+            "from_date_window": from_date_window,
+            "to_date_window": to_date_window,
+            "source": row.get("source") or derived["source"],
+            "backfill": True,
+            "backfill_order_by": cfg.sort,
+        })
+    return rows
 
+
+def _append_records_to_json(records: List[Dict], out_path: str) -> None:
+    """Load existing JSON array (if any), append new records, and save atomically."""
+    existing: List[Dict] = []
+    if os.path.exists(out_path):
+        try:
+            with open(out_path, "r", encoding="utf-8") as f:
+                existing = json.load(f)
+        except (json.JSONDecodeError, OSError):
+            logging.warning("Could not parse existing JSON at %s — starting fresh.", out_path)
+    existing.extend(records)
+    tmp_path = out_path + ".tmp"
+    with open(tmp_path, "w", encoding="utf-8") as f:
+        json.dump(existing, f, ensure_ascii=False, indent=2)
+    os.replace(tmp_path, out_path)
+
+
+def export_sample_style_json(article_df: pd.DataFrame, cfg: RuntimeConfig) -> str:
+    """Write the full combined article DataFrame to the output JSON in one shot."""
+    out_path = os.path.join(cfg.output_dir, f"sample_guardian_news_{cfg.year}.json")
+    rows = _build_json_records_from_df(article_df, cfg)
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(rows, f, ensure_ascii=False, indent=2)
-
     logging.info("Saved sample-style JSON: %s rows=%s", out_path, len(rows))
     return out_path
+
+
+def _scrape_ticker_metadata(
+    company: Dict,
+    cfg: RuntimeConfig,
+    budget: TimeBudget,
+    windows: List[Tuple[datetime, datetime]],
+    session: requests.Session,
+    rate_state: Dict[str, float],
+    seen: Set,
+) -> List[Dict]:
+    """Scrape GDELT metadata for a single ticker. Returns list of row dicts."""
+    ticker = company["ticker"]
+    query = build_gdelt_query(company, cfg)
+    rows: List[Dict] = []
+    ticker_kept = 0
+    ticker_months_done = 0
+
+    for start_dt, end_dt in tqdm(windows, desc=f"GDELT {ticker} {cfg.year}", leave=False):
+        if not budget.has_time(cfg.stop_before_deadline_seconds):
+            logging.warning("Stop GDELT metadata scraping due to time budget.")
+            break
+        if cfg.max_articles_per_ticker_year > 0 and ticker_kept >= cfg.max_articles_per_ticker_year:
+            break
+        if cfg.max_windows_per_ticker > 0 and ticker_months_done >= cfg.max_windows_per_ticker:
+            break
+
+        raw_articles = request_gdelt_articlelist(
+            session=session, query=query, start_dt=start_dt, end_dt=end_dt,
+            cfg=cfg, budget=budget, rate_state=rate_state,
+        )
+        if raw_articles is None:
+            mid_dt = start_dt + (end_dt - start_dt) / 2
+            first_half = request_gdelt_articlelist(
+                session=session, query=query, start_dt=start_dt, end_dt=mid_dt,
+                cfg=cfg, budget=budget, rate_state=rate_state,
+            )
+            second_half = request_gdelt_articlelist(
+                session=session, query=query, start_dt=mid_dt, end_dt=end_dt,
+                cfg=cfg, budget=budget, rate_state=rate_state,
+            )
+            raw_articles = (first_half or []) + (second_half or [])
+            logging.info("Ticker %s fallback split window %s -> %s got %s articles",
+                         ticker, start_dt.date(), end_dt.date(), len(raw_articles))
+
+        ticker_months_done += 1
+        if cfg.gdelt_sleep > 0:
+            time.sleep(cfg.gdelt_sleep)
+
+        raw_articles = raw_articles[: cfg.max_articles_per_month]
+        for rank, raw in enumerate(raw_articles, start=1):
+            if cfg.max_articles_per_ticker_year > 0 and ticker_kept >= cfg.max_articles_per_ticker_year:
+                break
+            url = raw.get("url")
+            if not url:
+                continue
+            article_id = stable_article_id(url)
+            key = (article_id, ticker)
+            if key in seen:
+                continue
+            ts = parse_gdelt_timestamp(raw.get("seendate") or raw.get("date"))
+            if ts is None:
+                continue
+            seen.add(key)
+            rows.append({
+                "article_id": article_id,
+                "url": url,
+                "ticker": ticker,
+                "company_name": company.get("company_name", ticker),
+                "title": clean_text(raw.get("title")),
+                "gdelt_timestamp_utc": ts,
+                "source_domain": raw.get("domain") or urlparse(url).netloc,
+                "language": raw.get("language"),
+                "source_country": raw.get("sourcecountry"),
+                "gdelt_query": query,
+                "window_start_utc": pd.Timestamp(start_dt, tz="UTC"),
+                "window_end_utc": pd.Timestamp(end_dt, tz="UTC"),
+                "rank_within_month": rank,
+                "window_days": cfg.window_days,
+            })
+            ticker_kept += 1
+
+    logging.info("Ticker %s done. months_processed=%s kept_articles=%s",
+                 ticker, ticker_months_done, ticker_kept)
+    return rows
+
+
+def _build_ticker_fulltext_rows(
+    meta_rows: List[Dict],
+    url_results: Dict[str, Dict],
+    company: Dict,
+    cfg: RuntimeConfig,
+) -> Tuple[List[Dict], List[Dict]]:
+    """Build full-text article rows for a single ticker. Returns (article_rows, failed_rows)."""
+    patterns = get_company_patterns(company)
+    regex = compile_entity_regex(patterns)
+    article_rows: List[Dict] = []
+    failed_rows: List[Dict] = []
+
+    for row in meta_rows:
+        url = row["url"]
+        result = url_results.get(url, {
+            "ok": False, "page_title": "", "body": "", "body_chars": 0,
+            "reason": "not_fetched_due_to_budget", "guardian_meta": {},
+        })
+        gdelt_title = clean_text(row.get("title"))
+        guardian_meta = result.get("guardian_meta", {}) or {}
+        derived = _derive_guardian_fields(url)
+        page_title = clean_text(result.get("page_title"))
+        title = clean_text(guardian_meta.get("headline")) or gdelt_title or page_title
+        full_text = clean_text(result.get("body"))
+        body_text = clean_text(guardian_meta.get("bodyText")) or full_text
+        web_title = clean_text(guardian_meta.get("webTitle")) or title
+
+        title_match = bool(regex.search(title)) if regex and title else False
+        body_match = bool(regex.search(full_text)) if regex and full_text else False
+
+        record = {
+            "article_id": row["article_id"],
+            "url": url,
+            "ticker": row["ticker"],
+            "company_name": row.get("company_name", company.get("company_name", row["ticker"])),
+            "gdelt_title": gdelt_title,
+            "page_title": page_title,
+            "title": title,
+            "gdelt_timestamp_utc": row["gdelt_timestamp_utc"],
+            "webPublicationDate": guardian_meta.get("webPublicationDate"),
+            "guardian_id": guardian_meta.get("guardian_id") or derived["guardian_id"],
+            "type": guardian_meta.get("type") or "article",
+            "sectionId": guardian_meta.get("sectionId") or derived["sectionId"],
+            "sectionName": guardian_meta.get("sectionName") or derived["sectionName"],
+            "pillarId": guardian_meta.get("pillarId"),
+            "pillarName": guardian_meta.get("pillarName"),
+            "webTitle": web_title,
+            "webUrl": clean_text(guardian_meta.get("webUrl")) or clean_text(url),
+            "apiUrl": guardian_meta.get("apiUrl") or derived["apiUrl"],
+            "headline": clean_text(guardian_meta.get("headline")) or title,
+            "trailText": clean_text(guardian_meta.get("trailText")),
+            "bodyText": body_text,
+            "wordcount": guardian_meta.get("wordcount"),
+            "guardian_tone": guardian_meta.get("guardian_tone"),
+            "tags": guardian_meta.get("tags") if isinstance(guardian_meta.get("tags"), list) else [],
+            "source_domain": row.get("source_domain", ""),
+            "language": row.get("language", ""),
+            "source_country": row.get("source_country", ""),
+            "gdelt_query": row.get("gdelt_query", ""),
+            "window_start_utc": row.get("window_start_utc"),
+            "window_end_utc": row.get("window_end_utc"),
+            "source": guardian_meta.get("source") or derived["source"],
+            "body_fetch_ok": bool(result.get("ok")),
+            "fetch_reason": result.get("reason", ""),
+            "text_len": int(len(full_text)),
+            "title_match": bool(title_match),
+            "body_match": bool(body_match),
+            "matched_entity": bool(title_match or body_match),
+            "full_text": full_text,
+        }
+        if result.get("ok"):
+            article_rows.append(record)
+        else:
+            failed_rows.append(record)
+
+    return article_rows, failed_rows
 
 
 # ============================================================
@@ -1112,44 +1293,107 @@ def main() -> None:
     logging.info("Max windows per ticker=%s", cfg.max_windows_per_ticker)
     logging.info("Effective min_request_interval=%s seconds", cfg.min_request_interval)
 
-    metadata_df = scrape_metadata_for_year(cfg, budget, companies)
+    json_out_path = os.path.join(cfg.output_dir, f"sample_guardian_news_{cfg.year}.json")
+
+    # Initialise an empty JSON array so the file exists from the start.
+    # If a prior run left a partial file we keep it (resume-friendly).
+    if not os.path.exists(json_out_path) or cfg.overwrite:
+        with open(json_out_path, "w", encoding="utf-8") as _f:
+            json.dump([], _f)
+
+    all_meta_rows: List[Dict] = []
+    all_article_rows: List[Dict] = []
+    all_failed_rows: List[Dict] = []
+
+    seen_urls: Set = set()
+    rate_state: Dict[str, float] = {"last_request_ts": 0.0}
+    session = requests.Session()
+    session.headers.update({"User-Agent": "month-ticker-scraper/1.0"})
+    windows = list(iter_windows_for_year(cfg.year, cfg.window_days))
+
+    for company in tqdm(companies, desc=f"Tickers {cfg.year}"):
+        if not budget.has_time(cfg.stop_before_deadline_seconds):
+            logging.warning("Stop pipeline due to time budget.")
+            break
+
+        ticker = company["ticker"]
+
+        # ── Step 1: scrape GDELT metadata for this ticker ──────────────
+        ticker_meta_rows = _scrape_ticker_metadata(
+            company, cfg, budget, windows, session, rate_state, seen_urls
+        )
+        all_meta_rows.extend(ticker_meta_rows)
+
+        if not ticker_meta_rows:
+            logging.info("Ticker %s: no metadata, skipping body fetch.", ticker)
+            continue
+
+        if cfg.skip_fulltext:
+            continue
+
+        # ── Step 2: fetch article bodies for this ticker ───────────────
+        ticker_meta_df = pd.DataFrame(ticker_meta_rows)
+        ticker_url_results = fetch_bodies_concurrently(ticker_meta_df, cfg, budget)
+
+        # ── Step 3: build full-text rows for this ticker ───────────────
+        ticker_article_rows, ticker_failed_rows = _build_ticker_fulltext_rows(
+            ticker_meta_rows, ticker_url_results, company, cfg
+        )
+        all_article_rows.extend(ticker_article_rows)
+        all_failed_rows.extend(ticker_failed_rows)
+
+        # ── Step 4: append this ticker's records to JSON immediately ───
+        ticker_combined_rows = ticker_article_rows + ticker_failed_rows
+        if ticker_combined_rows:
+            ticker_df = pd.DataFrame(ticker_combined_rows)
+            records = _build_json_records_from_df(ticker_df, cfg)
+            _append_records_to_json(records, json_out_path)
+            logging.info(
+                "Ticker %s: appended %d records to %s  (ok=%d failed=%d)",
+                ticker, len(records), json_out_path,
+                len(ticker_article_rows), len(ticker_failed_rows),
+            )
+            print(f"  [{ticker}] +{len(records)} records → {json_out_path}")
+
+    session.close()
+
+    # ── Save combined parquet / CSV at the end ─────────────────────────
+    metadata_df = pd.DataFrame(all_meta_rows)
+    if not metadata_df.empty:
+        metadata_df["gdelt_timestamp_utc"] = pd.to_datetime(
+            metadata_df["gdelt_timestamp_utc"], utc=True
+        )
+    metadata_path = os.path.join(cfg.output_dir, f"news_metadata_{cfg.year}.parquet")
+    (metadata_df if not metadata_df.empty else pd.DataFrame()).to_parquet(metadata_path, index=False)
     print(f"Metadata rows: {len(metadata_df):,}")
 
-    if metadata_df.empty:
-        print("No metadata rows collected. Exiting gracefully.")
-        elapsed = budget.elapsed_minutes()
-        print(f"\nDone year={cfg.year}. Runtime: {elapsed:.2f} minutes")
-        print(f"Output dir: {cfg.output_dir}")
-        print(f"Metadata: {os.path.join(cfg.output_dir, f'news_metadata_{cfg.year}.parquet')}")
-        return
+    if not cfg.skip_fulltext:
+        article_df = pd.DataFrame(all_article_rows)
+        failed_df = pd.DataFrame(all_failed_rows)
+        for df in (article_df, failed_df):
+            if not df.empty:
+                df["gdelt_timestamp_utc"] = pd.to_datetime(df["gdelt_timestamp_utc"], utc=True)
 
-    if cfg.skip_fulltext:
-        print("Skip fulltext stage: enabled")
-        article_df = pd.DataFrame()
-        failed_df = pd.DataFrame()
-    else:
-        url_results = fetch_bodies_concurrently(metadata_df, cfg, budget)
-        print(f"Fetched URL results: {len(url_results):,}")
-
-        article_df, failed_df = build_fulltext_article_table(metadata_df, url_results, cfg, companies)
+        article_path = os.path.join(cfg.output_dir, f"news_articles_fulltext_{cfg.year}.parquet")
+        failed_path = os.path.join(cfg.output_dir, f"news_article_fetch_failed_{cfg.year}.parquet")
+        article_df.to_parquet(article_path, index=False)
+        failed_df.to_parquet(failed_path, index=False)
         print(f"Full-text article rows: {len(article_df):,}")
         print(f"Failed fetch rows: {len(failed_df):,}")
 
-    if not cfg.skip_fulltext:
         export_df = pd.concat([article_df, failed_df], ignore_index=True)
         if not export_df.empty:
             print("\nArticles per ticker:")
             print(export_df.groupby("ticker").size().sort_values().to_string())
-            sample_json_path = export_sample_style_json(export_df, cfg)
-            print(f"Sample-style JSON: {sample_json_path}")
 
     elapsed = budget.elapsed_minutes()
     print(f"\nDone year={cfg.year}. Runtime: {elapsed:.2f} minutes")
     print(f"Output dir: {cfg.output_dir}")
-    print(f"Metadata: {os.path.join(cfg.output_dir, f'news_metadata_{cfg.year}.parquet')}")
+    print(f"Metadata: {metadata_path}")
     if not cfg.skip_fulltext:
         print(f"Full text: {os.path.join(cfg.output_dir, f'news_articles_fulltext_{cfg.year}.parquet')}")
         print(f"Failed log: {os.path.join(cfg.output_dir, f'news_article_fetch_failed_{cfg.year}.parquet')}")
+    print(f"JSON (incremental): {json_out_path}")
 
 
 if __name__ == "__main__":

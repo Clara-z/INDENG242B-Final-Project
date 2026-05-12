@@ -93,7 +93,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--icvar-alpha", type=float, default=0.05)
     parser.add_argument("--icvar-lambda", type=float, default=0.5)
-    parser.add_argument("--learning-rate", type=float, default=3e-4)
+    parser.add_argument("--learning-rate", type=float, default=1e-4)
     parser.add_argument(
         "--policy",
         type=str,
@@ -470,6 +470,7 @@ if HAS_RL_DEPS:
                 initial_concentration = self.concentration_init
                 if initial_concentration is None:
                     initial_concentration = max(10.0, 2.0 * float(self.n_assets))
+                self.concentration_max = max(self.concentration_max, initial_concentration)
                 target = max(initial_concentration - 1.0, 1e-3)
                 final_concentration.bias.data.fill_(float(np.log(np.expm1(target))))
 
@@ -918,7 +919,7 @@ def write_run_config(
             "  attention_heads      : 4",
             "  transformer_layers   : 1",
             "  dropout              : 0.0   (disabled — causes train/eval KL mismatch in PPO)",
-            "  concentration_max    : 20.0  (caps Dirichlet sharpness)",
+            "  concentration_max    : max(20.0, initial concentration)  (caps Dirichlet sharpness without making init sparse)",
             "  concentration_init   : auto  (max(10.0, 2 × n_assets) → alpha_i ≈ 2 at init)",
             "  distribution         : Dirichlet  (long-only simplex weights)",
             "  actor_init           : zeros  (starts at uniform allocation)",

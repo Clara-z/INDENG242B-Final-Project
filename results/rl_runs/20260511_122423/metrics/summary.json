@@ -1,0 +1,47 @@
+{
+  "run_id": "20260511_122423",
+  "features_path": "data/rl_features_with_news_pca32.parquet",
+  "split": {
+    "train": [
+      "2018-01-01",
+      "2022-12-31"
+    ],
+    "val": [
+      "2023-01-01",
+      "2023-12-31"
+    ],
+    "test": [
+      "2024-01-01",
+      "2025-12-31"
+    ]
+  },
+  "reward_mode": "simple",
+  "policy": "transformer",
+  "icvar_alpha": 0.05,
+  "icvar_lambda": 0.5,
+  "train_assets": 30,
+  "feature_count": 72,
+  "best_val_score": 1.6368175881689109,
+  "drawdown_penalty": 0.3,
+  "training_time": "01:22:14",
+  "training_seconds": 4934,
+  "test_rl": {
+    "return": 0.4436887999631294,
+    "sharpe": 0.9395546314843468,
+    "hit_rate": 0.5409181636726547,
+    "max_drawdown": -0.2652579181206691
+  },
+  "test_equal_weight": {
+    "return": 0.46329366952824014,
+    "sharpe": 0.9632650418665634,
+    "hit_rate": 0.5409181636726547,
+    "max_drawdown": -0.2631948525527844
+  },
+  "artifacts": {
+    "best_model": "results/rl_runs/20260511_122423/models/best_model.zip",
+    "final_model": "results/rl_runs/20260511_122423/models/final_model.zip",
+    "train_metrics": "results/rl_runs/20260511_122423/metrics/train_metrics.csv",
+    "val_metrics": "results/rl_runs/20260511_122423/metrics/val_metrics.csv",
+    "test_daily_returns": "results/rl_runs/20260511_122423/metrics/test_daily_returns.csv"
+  }
+}

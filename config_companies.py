@@ -222,10 +222,14 @@ COMPANIES = [
     },
     {
         "ticker": "META",
-        "company_name": "Meta Platforms Inc.",
-        "query_terms": ['"Meta Platforms"', '"Meta Platforms earnings"', '"Meta Platforms stock"', '"META stock"', '"Facebook"'],
+        "company_name": "Facebook",
+        "query_terms": ['"Facebook"', '"Facebook Inc"', '"Meta Platforms"', '"Meta Platforms earnings"', '"META stock"'],
         "exclude_terms": [],
-        "entity_match_patterns": ["Meta Platforms", "Meta", "Facebook", "Instagram", "Mark Zuckerberg", "META"],
+        "entity_match_patterns": [
+            "Facebook", "Facebook Inc", "Facebook Inc.",
+            "Meta Platforms", "Meta Platforms Inc", "Meta Platforms Inc.",
+            "Meta", "Instagram", "WhatsApp", "Mark Zuckerberg", "Zuckerberg", "META",
+        ],
     },
     {
         "ticker": "GOOGL",

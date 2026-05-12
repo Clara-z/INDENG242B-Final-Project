@@ -314,14 +314,19 @@
     },
     {
       "ticker": "META",
-      "company_name": "Meta Platforms Inc.",
+      "company_name": "Facebook",
       "entity_match_patterns": [
-        "Meta Platforms",
-        "Meta",
         "Facebook",
+        "Facebook Inc",
+        "Facebook Inc.",
+        "Meta Platforms",
+        "Meta Platforms Inc",
+        "Meta Platforms Inc.",
+        "Meta",
         "Instagram",
+        "WhatsApp",
         "Mark Zuckerberg",
-        "Meta Platforms Inc."
+        "Zuckerberg"
       ]
     },
     {
